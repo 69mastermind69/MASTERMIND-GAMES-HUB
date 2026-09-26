@@ -2,11 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta
         name="description"
@@ -21,12 +17,6 @@
     <link
         rel="manifest"
         href="manifest.json"
-    >
-
-    <link
-        rel="icon"
-        href="icon.svg"
-        type="image/svg+xml"
     >
 
     <title>MASTERMIND GAMES HUB</title>
@@ -254,14 +244,13 @@
 
     <script>
         if ("serviceWorker" in navigator) {
-
             window.addEventListener("load", () => {
-
                 navigator.serviceWorker
                     .register("./service-worker.js")
-                    .then(() => {
+                    .then((registration) => {
                         console.log(
-                            "MASTERMIND GAMES HUB offline mode ready."
+                            "Service Worker registered:",
+                            registration.scope
                         );
                     })
                     .catch((error) => {
@@ -270,9 +259,7 @@
                             error
                         );
                     });
-
             });
-
         }
     </script>
 

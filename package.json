@@ -1,0 +1,14 @@
+{
+  "name": "mastermind-games-hub",
+  "version": "1.0.0",
+  "description": "MASTERMIND GAMES HUB - Free offline mini games",
+  "private": true,
+  "scripts": {
+    "build": "echo \"No build step required\""
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.0",
+    "@capacitor/android": "^7.4.0",
+    "@capacitor/cli": "^7.4.0"
+  }
+}

@@ -1,330 +1,203 @@
-"use strict";
-
-/* =========================================================
-   MASTERMIND GAMES HUB
-   Developer: MASTERMIND
-   Version: 1.0.0
-   Offline Game Hub - No external libraries required
-   ========================================================= */
-
 const games = [
     {
         id: "snake",
         title: "Snake",
-        icon: "🐍",
         category: "Arcade",
-        description: "Eat food and grow the snake.",
-        start: startSnake
+        icon: "🐍",
+        description: "Eat food and grow longer."
     },
     {
         id: "tictactoe",
         title: "Tic-Tac-Toe",
+        category: "Board",
         icon: "⭕",
-        category: "Puzzle",
-        description: "Beat the computer in 3×3.",
-        start: startTicTacToe
+        description: "Beat the computer."
     },
     {
         id: "2048",
         title: "2048",
-        icon: "🔢",
         category: "Puzzle",
-        description: "Join numbers to reach 2048.",
-        start: start2048
+        icon: "🔢",
+        description: "Combine tiles to reach 2048."
     },
     {
         id: "memory",
         title: "Memory Match",
-        icon: "🧠",
         category: "Puzzle",
-        description: "Find all matching pairs.",
-        start: startMemory
+        icon: "🧠",
+        description: "Match all pairs."
     },
     {
         id: "reaction",
         title: "Reaction Test",
+        category: "Skill",
         icon: "⚡",
-        category: "Quick",
-        description: "Test how fast you can react.",
-        start: startReaction
+        description: "Test your reaction speed."
     },
     {
         id: "numberguess",
         title: "Number Guess",
+        category: "Puzzle",
         icon: "🎯",
-        category: "Quick",
-        description: "Guess the secret number.",
-        start: startNumberGuess
+        description: "Guess the secret number."
     },
     {
         id: "pong",
         title: "Pong",
-        icon: "🏓",
         category: "Arcade",
-        description: "Play classic paddle tennis.",
-        start: startPong
+        icon: "🏓",
+        description: "Keep the ball away."
     },
     {
         id: "breakout",
         title: "Breakout",
-        icon: "🧱",
         category: "Arcade",
-        description: "Break every brick.",
-        start: startBreakout
+        icon: "🧱",
+        description: "Break every brick."
     },
     {
         id: "minesweeper",
         title: "Minesweeper",
-        icon: "💣",
         category: "Puzzle",
-        description: "Clear the board without mines.",
-        start: startMinesweeper
+        icon: "💣",
+        description: "Find the safe cells."
     },
     {
         id: "connect4",
         title: "Connect Four",
-        icon: "🔴",
         category: "Board",
-        description: "Connect four pieces in a row.",
-        start: startConnectFour
+        icon: "🔴",
+        description: "Connect four in a row."
     },
     {
         id: "rps",
         title: "Rock Paper Scissors",
+        category: "Casual",
         icon: "✊",
-        category: "Quick",
-        description: "Choose your move and play.",
-        start: startRPS
+        description: "Choose your move."
     },
     {
         id: "simon",
         title: "Simon Says",
-        icon: "🎵",
-        category: "Memory",
-        description: "Remember the color sequence.",
-        start: startSimon
+        category: "Skill",
+        icon: "🎨",
+        description: "Remember the sequence."
     },
     {
         id: "whack",
         title: "Whack-a-Mole",
-        icon: "🐹",
         category: "Arcade",
-        description: "Tap the mole before it moves.",
-        start: startWhack
+        icon: "🔨",
+        description: "Hit the mole quickly."
     },
     {
         id: "sliding",
         title: "Sliding Puzzle",
-        icon: "🧩",
         category: "Puzzle",
-        description: "Arrange the tiles in order.",
-        start: startSlidingPuzzle
+        icon: "🧩",
+        description: "Put the numbers in order."
     },
     {
         id: "colormatch",
         title: "Color Match",
-        icon: "🎨",
-        category: "Quick",
-        description: "Find the correct color.",
-        start: startColorMatch
+        category: "Skill",
+        icon: "🌈",
+        description: "Match the target color."
     },
     {
-        id: "math",
+        id: "mathsprint",
         title: "Math Sprint",
+        category: "Brain",
         icon: "➗",
-        category: "Quick",
-        description: "Solve as many sums as possible.",
-        start: startMathSprint
+        description: "Solve as many as you can."
     },
     {
         id: "tap",
         title: "Tap Counter",
+        category: "Casual",
         icon: "👆",
-        category: "Quick",
-        description: "Tap as fast as you can.",
-        start: startTapCounter
+        description: "Tap as fast as possible."
     },
     {
-        id: "word",
+        id: "wordguess",
         title: "Word Guess",
+        category: "Word",
         icon: "🔤",
-        category: "Puzzle",
-        description: "Guess the hidden word.",
-        start: startWordGuess
+        description: "Guess the hidden word."
     },
     {
         id: "dodge",
         title: "Dodge Blocks",
-        icon: "🚀",
         category: "Arcade",
-        description: "Avoid falling blocks.",
-        start: startDodgeBlocks
+        icon: "🚀",
+        description: "Avoid falling blocks."
     },
     {
         id: "coin",
         title: "Coin Catcher",
-        icon: "🪙",
         category: "Arcade",
-        description: "Catch coins and avoid bombs.",
-        start: startCoinCatcher
+        icon: "🪙",
+        description: "Catch the falling coins."
     }
 ];
 
-/* =========================================================
-   APP STATE
-   ========================================================= */
-
-let currentGame = null;
-let cleanupCurrentGame = null;
-let activeCategory = "All";
-let searchText = "";
-
-const gameContainer = document.getElementById("gameContainer");
 const gameGrid = document.getElementById("gameGrid");
-const searchInput = document.getElementById("searchInput");
-
 const homeScreen = document.getElementById("homeScreen");
 const gameScreen = document.getElementById("gameScreen");
+const gameContainer = document.getElementById("gameContainer");
 
+const searchInput = document.getElementById("searchInput");
+const themeToggle = document.getElementById("themeToggle");
 const backButton = document.getElementById("backButton");
 const restartButton = document.getElementById("restartButton");
 
-const currentGameIcon = document.getElementById("currentGameIcon");
 const currentGameTitle = document.getElementById("currentGameTitle");
 const currentGameCategory = document.getElementById("currentGameCategory");
+const currentGameIcon = document.getElementById("currentGameIcon");
 
-const themeToggle = document.getElementById("themeToggle");
+let currentGame = null;
+let cleanupGame = () => {};
+let activeCategory = "All";
 
-const scores = JSON.parse(
-    localStorage.getItem("mgh_scores") || "{}"
-);
+let scores = {};
 
-/* =========================================================
-   UTILITY FUNCTIONS
-   ========================================================= */
+try {
+    scores = JSON.parse(
+        localStorage.getItem("mgh_scores") || "{}"
+    );
+} catch {
+    scores = {};
+}
+
 
 function saveScores() {
-    localStorage.setItem("mgh_scores", JSON.stringify(scores));
-}
-
-function saveHighScore(gameId, score) {
-    score = Number(score) || 0;
-
-    if (!scores[gameId] || score > scores[gameId]) {
-        scores[gameId] = score;
-        saveScores();
-        return true;
-    }
-
-    return false;
-}
-
-function getHighScore(gameId) {
-    return Number(scores[gameId] || 0);
-}
-
-function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function shuffle(array) {
-    const arr = [...array];
-
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-
-    return arr;
-}
-
-function clearGameContainer() {
-    if (gameContainer) {
-        gameContainer.innerHTML = "";
-    }
-}
-
-function setGameContent(html) {
-    gameContainer.innerHTML = html;
-}
-
-function createElement(tag, className, text) {
-    const element = document.createElement(tag);
-
-    if (className) {
-        element.className = className;
-    }
-
-    if (text !== undefined) {
-        element.textContent = text;
-    }
-
-    return element;
-}
-
-function showMessage(icon, title, text, buttonText = "OK", callback = null) {
-    let overlay = document.getElementById("messageOverlay");
-
-    if (!overlay) {
-        overlay = document.createElement("div");
-        overlay.id = "messageOverlay";
-        overlay.className = "message-overlay";
-
-        document.body.appendChild(overlay);
-    }
-
-    overlay.innerHTML = `
-        <div class="message-box">
-            <div class="message-icon">${icon}</div>
-            <h2>${title}</h2>
-            <p>${text}</p>
-            <div class="message-actions">
-                <button class="primary-button" id="messageOkButton">${buttonText}</button>
-            </div>
-        </div>
-    `;
-
-    overlay.classList.remove("hidden");
-
-    const button = document.getElementById("messageOkButton");
-
-    button.addEventListener("click", () => {
-        overlay.classList.add("hidden");
-
-        if (callback) {
-            callback();
-        }
-    });
-}
-
-function getGame(id) {
-    return games.find(game => game.id === id);
-}
-
-function gameEndMessage(title, score) {
-    const high = getHighScore(currentGame.id);
-    const isNew = saveHighScore(currentGame.id, score);
-
-    showMessage(
-        isNew ? "🏆" : "🎮",
-        title,
-        `Score: ${score} | Best: ${Math.max(score, high)}`,
-        "Play Again",
-        () => {
-            restartCurrentGame();
-        }
+    localStorage.setItem(
+        "mgh_scores",
+        JSON.stringify(scores)
     );
 }
 
-/* =========================================================
-   HOME SCREEN
-   ========================================================= */
+
+function getHighScore(id) {
+    return Number(scores[id] || 0);
+}
+
+
+function setHighScore(id, value) {
+    value = Number(value) || 0;
+
+    if (value > getHighScore(id)) {
+        scores[id] = value;
+        saveScores();
+    }
+}
+
 
 function renderCategories() {
-    const area = document.querySelector(".category-area");
+    const categoryArea =
+        document.querySelector(".category-area");
 
-    if (!area) {
+    if (!categoryArea) {
         return;
     }
 
@@ -333,3671 +206,4927 @@ function renderCategories() {
         ...new Set(games.map(game => game.category))
     ];
 
-    area.innerHTML = "";
+    categoryArea.innerHTML = categories
+        .map(category => `
+            <button
+                type="button"
+                class="category-button ${
+                    category === activeCategory
+                        ? "active"
+                        : ""
+                }"
+                data-category="${category}"
+            >
+                ${category}
+            </button>
+        `)
+        .join("");
 
-    categories.forEach(category => {
-        const button = document.createElement("button");
+    categoryArea
+        .querySelectorAll(".category-button")
+        .forEach(button => {
 
-        button.className = "category-button";
-        button.textContent = category;
+            button.addEventListener("click", () => {
 
-        if (category === activeCategory) {
-            button.classList.add("active");
-        }
+                activeCategory =
+                    button.dataset.category;
 
-        button.addEventListener("click", () => {
-            activeCategory = category;
-            renderCategories();
-            renderGameCards();
+                renderCategories();
+                renderGames();
+
+            });
+
         });
-
-        area.appendChild(button);
-    });
 }
 
-function renderGameCards() {
-    if (!gameGrid) {
-        return;
-    }
 
-    gameGrid.innerHTML = "";
+function renderGames() {
+    const query =
+        (searchInput?.value || "")
+            .trim()
+            .toLowerCase();
 
-    const filtered = games.filter(game => {
-        const matchesCategory =
+    const filteredGames = games.filter(game => {
+
+        const categoryMatch =
             activeCategory === "All" ||
             game.category === activeCategory;
 
-        const search = searchText.toLowerCase();
+        const searchText = (
+            game.title +
+            " " +
+            game.category +
+            " " +
+            game.description
+        ).toLowerCase();
 
-        const matchesSearch =
-            !search ||
-            game.title.toLowerCase().includes(search) ||
-            game.category.toLowerCase().includes(search) ||
-            game.description.toLowerCase().includes(search);
-
-        return matchesCategory && matchesSearch;
+        return categoryMatch &&
+            searchText.includes(query);
     });
 
-    if (filtered.length === 0) {
+
+    if (filteredGames.length === 0) {
+
         gameGrid.innerHTML = `
             <div class="no-results">
-                <div class="no-results-icon">🔎</div>
-                <h3>No games found</h3>
-                <p>Try another search or category.</p>
+                No games found.
             </div>
         `;
 
         return;
     }
 
-    filtered.forEach(game => {
-        const card = document.createElement("article");
 
-        card.className = "game-card";
+    gameGrid.innerHTML = filteredGames
+        .map(game => `
+            <article
+                class="game-card"
+                data-game="${game.id}"
+            >
 
-        card.innerHTML = `
-            <div>
                 <div class="game-card-top">
-                    <div class="game-icon">${game.icon}</div>
-                    <span class="game-category">${game.category}</span>
+
+                    <div class="game-icon">
+                        ${game.icon}
+                    </div>
+
+                    <span class="game-category">
+                        ${game.category}
+                    </span>
+
                 </div>
 
-                <h3>${game.title}</h3>
-                <p>${game.description}</p>
-            </div>
+                <h3>
+                    ${game.title}
+                </h3>
 
-            <button class="play-button">
-                PLAY
-            </button>
-        `;
+                <p>
+                    ${game.description}
+                </p>
 
-        const playButton = card.querySelector(".play-button");
+                <button
+                    class="play-button"
+                    type="button"
+                    data-play="${game.id}"
+                >
+                    Play ▶
+                </button>
 
-        playButton.addEventListener("click", () => {
-            openGame(game.id);
+            </article>
+        `)
+        .join("");
+
+
+    gameGrid
+        .querySelectorAll("[data-play]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                openGame(button.dataset.play);
+
+            });
+
         });
-
-        gameGrid.appendChild(card);
-    });
 }
 
-/* =========================================================
-   SCREEN NAVIGATION
-   ========================================================= */
 
-function openGame(gameId) {
-    const game = getGame(gameId);
+function openGame(id) {
+
+    const game =
+        games.find(item => item.id === id);
 
     if (!game) {
         return;
     }
 
-    if (cleanupCurrentGame) {
-        cleanupCurrentGame();
-        cleanupCurrentGame = null;
-    }
+
+    cleanupGame();
+
+    cleanupGame = () => {};
 
     currentGame = game;
+
 
     homeScreen.classList.remove("active");
     gameScreen.classList.add("active");
 
-    currentGameIcon.textContent = game.icon;
-    currentGameTitle.textContent = game.title;
-    currentGameCategory.textContent = game.category;
 
-    clearGameContainer();
+    currentGameTitle.textContent =
+        game.title;
+
+    currentGameCategory.textContent =
+        game.category;
+
+    currentGameIcon.textContent =
+        game.icon;
+
+
+    gameContainer.innerHTML = "";
+
+
+    const launcher =
+        gameLaunchers[game.id];
+
+    if (launcher) {
+        cleanupGame = launcher() || (() => {});
+    }
+
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
-
-    cleanupCurrentGame = game.start() || null;
 }
 
-function backToHome() {
-    if (cleanupCurrentGame) {
-        cleanupCurrentGame();
-        cleanupCurrentGame = null;
-    }
+
+function goHome() {
+
+    cleanupGame();
+
+    cleanupGame = () => {};
 
     currentGame = null;
 
-    clearGameContainer();
 
     gameScreen.classList.remove("active");
     homeScreen.classList.add("active");
 
+
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
 }
 
+
 function restartCurrentGame() {
+
     if (!currentGame) {
         return;
     }
 
-    if (cleanupCurrentGame) {
-        cleanupCurrentGame();
-        cleanupCurrentGame = null;
+    openGame(currentGame.id);
+}
+
+
+function showMessage(
+    title,
+    text,
+    icon = "🎉"
+) {
+
+    const oldOverlay =
+        document.querySelector(".message-overlay");
+
+    if (oldOverlay) {
+        oldOverlay.remove();
     }
 
-    clearGameContainer();
 
-    cleanupCurrentGame = currentGame.start() || null;
+    const overlay =
+        document.createElement("div");
+
+    overlay.className =
+        "message-overlay";
+
+
+    overlay.innerHTML = `
+        <div class="message-box">
+
+            <div class="message-icon">
+                ${icon}
+            </div>
+
+            <h2>
+                ${title}
+            </h2>
+
+            <p>
+                ${text}
+            </p>
+
+            <div class="message-actions">
+
+                <button
+                    class="primary-button"
+                    type="button"
+                    data-restart
+                >
+                    Play Again
+                </button>
+
+                <button
+                    class="secondary-button"
+                    type="button"
+                    data-back
+                >
+                    Back
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+
+    document.body.appendChild(overlay);
+
+
+    overlay
+        .querySelector("[data-restart]")
+        .addEventListener("click", () => {
+
+            overlay.remove();
+            restartCurrentGame();
+
+        });
+
+
+    overlay
+        .querySelector("[data-back]")
+        .addEventListener("click", () => {
+
+            overlay.remove();
+            goHome();
+
+        });
 }
 
-if (backButton) {
-    backButton.addEventListener("click", backToHome);
-}
 
-if (restartButton) {
-    restartButton.addEventListener("click", restartCurrentGame);
-}
-
-if (searchInput) {
-    searchInput.addEventListener("input", event => {
-        searchText = event.target.value.trim();
-        renderGameCards();
-    });
-}
-
-/* =========================================================
-   DARK MODE
-   ========================================================= */
-
-function updateThemeButton() {
-    if (!themeToggle) {
-        return;
-    }
+function applyTheme() {
 
     const dark =
-        document.body.classList.contains("dark-mode");
+        localStorage.getItem("mgh_theme") === "dark";
 
-    themeToggle.textContent = dark ? "☀️" : "🌙";
-}
+    document.body.classList.toggle(
+        "dark-mode",
+        dark
+    );
 
-function loadTheme() {
-    const theme = localStorage.getItem("mgh_theme");
 
-    if (theme === "dark") {
-        document.body.classList.add("dark-mode");
+    if (themeToggle) {
+
+        themeToggle.textContent =
+            dark ? "☀️" : "🌙";
+
     }
-
-    updateThemeButton();
 }
+
+
+if (searchInput) {
+
+    searchInput.addEventListener(
+        "input",
+        renderGames
+    );
+
+}
+
+
+if (backButton) {
+
+    backButton.addEventListener(
+        "click",
+        goHome
+    );
+
+}
+
+
+if (restartButton) {
+
+    restartButton.addEventListener(
+        "click",
+        restartCurrentGame
+    );
+
+}
+
 
 if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-        document.body.classList.toggle("dark-mode");
 
-        const dark =
-            document.body.classList.contains("dark-mode");
+    themeToggle.addEventListener(
+        "click",
+        () => {
 
-        localStorage.setItem(
-            "mgh_theme",
-            dark ? "dark" : "light"
-        );
+            const dark =
+                document.body.classList.toggle(
+                    "dark-mode"
+                );
 
-        updateThemeButton();
-    });
+            localStorage.setItem(
+                "mgh_theme",
+                dark ? "dark" : "light"
+            );
+
+            themeToggle.textContent =
+                dark ? "☀️" : "🌙";
+
+        }
+    );
+
 }
+
 
 /* =========================================================
    SNAKE
-   ========================================================= */
+========================================================= */
 
-function startSnake() {
-    setGameContent(`
+function launchSnake() {
+
+    gameContainer.innerHTML = `
         <div class="game-info-bar">
-            <span>Score: <b id="snakeScore">0</b></span>
-            <span>Best: <b>${getHighScore("snake")}</b></span>
+            <span>Score</span>
+            <strong class="score-value">0</strong>
         </div>
 
-        <canvas id="snakeCanvas"
-                class="game-canvas"
-                width="360"
-                height="360"></canvas>
+        <canvas
+            class="game-canvas"
+            id="snakeCanvas"
+            width="360"
+            height="360"
+        ></canvas>
 
         <div class="direction-controls">
-            <button class="up">▲</button>
-            <button class="left">◀</button>
-            <button class="down">▼</button>
-            <button class="right">▶</button>
+
+            <button data-direction="up">
+                ▲
+            </button>
+
+            <div>
+                <button data-direction="left">
+                    ◀
+                </button>
+
+                <button data-direction="down">
+                    ▼
+                </button>
+
+                <button data-direction="right">
+                    ▶
+                </button>
+            </div>
+
         </div>
-    `);
+    `;
 
-    const canvas = document.getElementById("snakeCanvas");
-    const ctx = canvas.getContext("2d");
-    const scoreElement = document.getElementById("snakeScore");
 
-    const grid = 18;
-    const cell = canvas.width / grid;
+    const canvas =
+        document.getElementById("snakeCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    const cellSize = 18;
+    const cells = 20;
+
 
     let snake = [
-        { x: 9, y: 9 },
-        { x: 8, y: 9 },
-        { x: 7, y: 9 }
+        {
+            x: 10,
+            y: 10
+        }
     ];
 
-    let direction = { x: 1, y: 0 };
-    let nextDirection = { x: 1, y: 0 };
 
-    let food = createFood();
+    let direction = {
+        x: 1,
+        y: 0
+    };
+
+
+    let nextDirection = {
+        x: 1,
+        y: 0
+    };
+
+
+    let food = {
+        x: 5,
+        y: 5
+    };
+
+
     let score = 0;
     let timer = null;
-    let stopped = false;
 
-    function createFood() {
-        let position;
+
+    function placeFood() {
 
         do {
-            position = {
-                x: randomInt(0, grid - 1),
-                y: randomInt(0, grid - 1)
+
+            food = {
+                x: Math.floor(
+                    Math.random() * cells
+                ),
+                y: Math.floor(
+                    Math.random() * cells
+                )
             };
+
         } while (
-            snake &&
             snake.some(
                 part =>
-                    part.x === position.x &&
-                    part.y === position.y
+                    part.x === food.x &&
+                    part.y === food.y
             )
         );
 
-        return position;
     }
+
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = "#111827";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#10101a";
 
-        ctx.fillStyle = "#f1b928";
         ctx.fillRect(
-            food.x * cell + 3,
-            food.y * cell + 3,
-            cell - 6,
-            cell - 6
+            0,
+            0,
+            canvas.width,
+            canvas.height
         );
 
+
+        ctx.fillStyle = "#ff2bd6";
+
+        ctx.fillRect(
+            food.x * cellSize,
+            food.y * cellSize,
+            cellSize - 2,
+            cellSize - 2
+        );
+
+
         snake.forEach((part, index) => {
+
             ctx.fillStyle =
-                index === 0 ? "#7c7df7" : "#4f52d8";
+                index === 0
+                    ? "#00f5ff"
+                    : "#8b5cf6";
+
 
             ctx.fillRect(
-                part.x * cell + 2,
-                part.y * cell + 2,
-                cell - 4,
-                cell - 4
+                part.x * cellSize,
+                part.y * cellSize,
+                cellSize - 2,
+                cellSize - 2
             );
+
         });
+
     }
 
-    function finish() {
-        if (stopped) {
+
+    function changeDirection(newDirection) {
+
+        if (
+            newDirection.x === -direction.x &&
+            newDirection.y === -direction.y
+        ) {
             return;
         }
 
-        stopped = true;
-
-        if (timer) {
-            clearInterval(timer);
-        }
-
-        gameEndMessage("Snake Over!", score);
+        nextDirection =
+            newDirection;
     }
 
-    function update() {
-        direction = nextDirection;
+
+    function gameStep() {
+
+        direction =
+            nextDirection;
+
 
         const head = {
             x: snake[0].x + direction.x,
             y: snake[0].y + direction.y
         };
 
-        if (
-            head.x < 0 ||
-            head.x >= grid ||
-            head.y < 0 ||
-            head.y >= grid
-        ) {
-            finish();
-            return;
-        }
 
-        if (
+        const hitWall =
+            head.x < 0 ||
+            head.x >= cells ||
+            head.y < 0 ||
+            head.y >= cells;
+
+
+        const hitBody =
             snake.some(
                 part =>
                     part.x === head.x &&
                     part.y === head.y
-            )
-        ) {
-            finish();
+            );
+
+
+        if (hitWall || hitBody) {
+
+            clearInterval(timer);
+
+            setHighScore(
+                "snake",
+                score
+            );
+
+            showMessage(
+                "Game Over",
+                `Your score: ${score}`,
+                "🐍"
+            );
+
             return;
         }
 
+
         snake.unshift(head);
+
 
         if (
             head.x === food.x &&
             head.y === food.y
         ) {
+
             score++;
-            scoreElement.textContent = score;
-            food = createFood();
+
+            scoreElement.textContent =
+                score;
+
+            placeFood();
+
         } else {
+
             snake.pop();
+
         }
 
+
         draw();
+
     }
 
-    function changeDirection(x, y) {
+
+    function keyboardHandler(event) {
+
+        const key =
+            event.key.toLowerCase();
+
+
         if (
-            direction.x === -x &&
-            direction.y === -y
+            key === "arrowup" ||
+            key === "w"
+        ) {
+
+            changeDirection({
+                x: 0,
+                y: -1
+            });
+
+        }
+
+
+        if (
+            key === "arrowdown" ||
+            key === "s"
+        ) {
+
+            changeDirection({
+                x: 0,
+                y: 1
+            });
+
+        }
+
+
+        if (
+            key === "arrowleft" ||
+            key === "a"
+        ) {
+
+            changeDirection({
+                x: -1,
+                y: 0
+            });
+
+        }
+
+
+        if (
+            key === "arrowright" ||
+            key === "d"
+        ) {
+
+            changeDirection({
+                x: 1,
+                y: 0
+            });
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        keyboardHandler
+    );
+
+
+    gameContainer
+        .querySelectorAll(
+            "[data-direction]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const directionMap = {
+
+                        up: {
+                            x: 0,
+                            y: -1
+                        },
+
+                        down: {
+                            x: 0,
+                            y: 1
+                        },
+
+                        left: {
+                            x: -1,
+                            y: 0
+                        },
+
+                        right: {
+                            x: 1,
+                            y: 0
+                        }
+
+                    };
+
+
+                    changeDirection(
+                        directionMap[
+                            button.dataset.direction
+                        ]
+                    );
+
+                }
+            );
+
+        });
+
+
+    placeFood();
+    draw();
+
+
+    timer =
+        setInterval(
+            gameStep,
+            110
+        );
+
+
+    return () => {
+
+        clearInterval(timer);
+
+        document.removeEventListener(
+            "keydown",
+            keyboardHandler
+        );
+
+    };
+}
+
+
+/* =========================================================
+   TIC TAC TOE
+========================================================= */
+
+function launchTicTacToe() {
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Status</span>
+            <strong class="score-value">
+                X
+            </strong>
+        </div>
+
+        <div
+            class="ttt-board"
+            id="tttBoard"
+        ></div>
+
+        <p id="tttStatus">
+            Your turn — X
+        </p>
+    `;
+
+
+    const boardElement =
+        document.getElementById("tttBoard");
+
+    const statusElement =
+        document.getElementById("tttStatus");
+
+
+    let board =
+        Array(9).fill("");
+
+
+    function checkWinner(state) {
+
+        const lines = [
+
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+
+            [0, 4, 8],
+            [2, 4, 6]
+
+        ];
+
+
+        for (const line of lines) {
+
+            const [a, b, c] = line;
+
+
+            if (
+                state[a] &&
+                state[a] === state[b] &&
+                state[a] === state[c]
+            ) {
+
+                return state[a];
+
+            }
+
+        }
+
+
+        if (
+            state.every(
+                value => value !== ""
+            )
+        ) {
+
+            return "draw";
+
+        }
+
+
+        return null;
+    }
+
+
+    function render() {
+
+        boardElement.innerHTML =
+            board
+                .map(
+                    (value, index) => `
+                        <button
+                            class="ttt-cell"
+                            data-index="${index}"
+                        >
+                            ${value}
+                        </button>
+                    `
+                )
+                .join("");
+
+
+        boardElement
+            .querySelectorAll("button")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        playerMove(
+                            Number(
+                                button.dataset.index
+                            )
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    function finish(result) {
+
+        if (result === "draw") {
+
+            statusElement.textContent =
+                "Draw!";
+
+        } else if (result === "X") {
+
+            statusElement.textContent =
+                "You win!";
+
+            setHighScore(
+                "tictactoe",
+                1
+            );
+
+        } else {
+
+            statusElement.textContent =
+                "Computer wins!";
+
+        }
+
+
+        boardElement
+            .querySelectorAll("button")
+            .forEach(
+                button =>
+                    button.disabled = true
+            );
+
+    }
+
+
+    function playerMove(index) {
+
+        if (
+            board[index] ||
+            checkWinner(board)
         ) {
             return;
         }
 
-        nextDirection = { x, y };
-    }
 
-    function keyboardHandler(event) {
-        const key = event.key.toLowerCase();
+        board[index] = "X";
 
-        if (key === "arrowup" || key === "w") {
-            changeDirection(0, -1);
-        }
+        render();
 
-        if (key === "arrowdown" || key === "s") {
-            changeDirection(0, 1);
-        }
 
-        if (key === "arrowleft" || key === "a") {
-            changeDirection(-1, 0);
-        }
+        let result =
+            checkWinner(board);
 
-        if (key === "arrowright" || key === "d") {
-            changeDirection(1, 0);
-        }
-    }
 
-    window.addEventListener("keydown", keyboardHandler);
+        if (result) {
 
-    document.querySelector(".up")
-        .addEventListener("click", () => changeDirection(0, -1));
-
-    document.querySelector(".down")
-        .addEventListener("click", () => changeDirection(0, 1));
-
-    document.querySelector(".left")
-        .addEventListener("click", () => changeDirection(-1, 0));
-
-    document.querySelector(".right")
-        .addEventListener("click", () => changeDirection(1, 0));
-
-    draw();
-
-    timer = setInterval(update, 120);
-
-    return () => {
-        stopped = true;
-
-        if (timer) {
-            clearInterval(timer);
-        }
-
-        window.removeEventListener("keydown", keyboardHandler);
-    };
-}
-
-/* =========================================================
-   TIC TAC TOE
-   ========================================================= */
-
-function startTicTacToe() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span id="tttStatus">Your turn — X</span>
-            <span>Best: ${getHighScore("tictactoe")}</span>
-        </div>
-
-        <div id="tttBoard" class="ttt-board"></div>
-
-        <button id="tttNew" class="game-button">
-            New Game
-        </button>
-    `);
-
-    const boardElement = document.getElementById("tttBoard");
-    const statusElement = document.getElementById("tttStatus");
-    const newButton = document.getElementById("tttNew");
-
-    let board = Array(9).fill("");
-    let gameOver = false;
-    let aiTimer = null;
-
-    function render() {
-        boardElement.innerHTML = "";
-
-        board.forEach((value, index) => {
-            const cell = document.createElement("button");
-
-            cell.className = "ttt-cell";
-            cell.textContent = value;
-
-            cell.addEventListener("click", () => {
-                if (gameOver || board[index]) {
-                    return;
-                }
-
-                board[index] = "X";
-
-                if (checkWinner(board, "X")) {
-                    gameOver = true;
-                    statusElement.textContent = "You win!";
-                    saveHighScore("tictactoe", 1);
-                    return render();
-                }
-
-                if (board.every(Boolean)) {
-                    gameOver = true;
-                    statusElement.textContent = "Draw!";
-                    return render();
-                }
-
-                statusElement.textContent = "Computer thinking...";
-                render();
-
-                aiTimer = setTimeout(aiMove, 400);
-            });
-
-            boardElement.appendChild(cell);
-        });
-    }
-
-    function aiMove() {
-        if (gameOver) {
+            finish(result);
             return;
+
         }
 
-        let move = findWinningMove("O");
 
-        if (move === -1) {
-            move = findWinningMove("X");
-        }
+        statusElement.textContent =
+            "Computer thinking…";
 
-        if (move === -1) {
-            const empty = board
-                .map((value, index) => value ? -1 : index)
-                .filter(index => index !== -1);
 
-            if (empty.length) {
-                move = empty[
-                    randomInt(0, empty.length - 1)
+        setTimeout(() => {
+
+            const empty =
+                board
+                    .map(
+                        (value, index) =>
+                            value
+                                ? null
+                                : index
+                    )
+                    .filter(
+                        index =>
+                            index !== null
+                    );
+
+
+            if (!empty.length) {
+
+                finish("draw");
+                return;
+
+            }
+
+
+            const index =
+                empty[
+                    Math.floor(
+                        Math.random() *
+                        empty.length
+                    )
                 ];
+
+
+            board[index] = "O";
+
+            render();
+
+
+            result =
+                checkWinner(board);
+
+
+            if (result) {
+
+                finish(result);
+
+            } else {
+
+                statusElement.textContent =
+                    "Your turn — X";
+
             }
-        }
 
-        if (move !== -1) {
-            board[move] = "O";
-        }
+        }, 350);
 
-        if (checkWinner(board, "O")) {
-            gameOver = true;
-            statusElement.textContent = "Computer wins!";
-        } else if (board.every(Boolean)) {
-            gameOver = true;
-            statusElement.textContent = "Draw!";
-        } else {
-            statusElement.textContent = "Your turn — X";
-        }
-
-        render();
     }
 
-    function findWinningMove(player) {
-        for (let i = 0; i < 9; i++) {
-            if (!board[i]) {
-                board[i] = player;
-
-                const win = checkWinner(board, player);
-
-                board[i] = "";
-
-                if (win) {
-                    return i;
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    function reset() {
-        if (aiTimer) {
-            clearTimeout(aiTimer);
-        }
-
-        board = Array(9).fill("");
-        gameOver = false;
-        statusElement.textContent = "Your turn — X";
-
-        render();
-    }
-
-    newButton.addEventListener("click", reset);
 
     render();
 
-    return () => {
-        if (aiTimer) {
-            clearTimeout(aiTimer);
-        }
-    };
+    return () => {};
+
 }
 
-function checkWinner(board, player) {
-    const wins = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-
-    return wins.some(
-        line =>
-            board[line[0]] === player &&
-            board[line[1]] === player &&
-            board[line[2]] === player
-    );
-}
 
 /* =========================================================
    2048
-   ========================================================= */
+========================================================= */
 
-function start2048() {
-    setGameContent(`
+function launch2048() {
+
+    gameContainer.innerHTML = `
         <div class="game-info-bar">
-            <span>Score: <b id="game2048Score">0</b></span>
-            <span>Best: <b>${getHighScore("2048")}</b></span>
+            <span>Score</span>
+            <strong class="score-value">
+                0
+            </strong>
         </div>
 
-        <div class="game-2048">
-            <div id="grid2048" class="grid-2048"></div>
-        </div>
+        <div
+            class="grid-2048"
+            id="grid2048"
+        ></div>
 
-        <p style="margin-top:14px;">
-            Use Arrow Keys or swipe.
+        <p>
+            Use arrow keys or swipe.
         </p>
-    `);
+    `;
 
-    const gridElement = document.getElementById("grid2048");
-    const scoreElement = document.getElementById("game2048Score");
 
-    let board = Array(16).fill(0);
+    const grid =
+        document.getElementById("grid2048");
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    let board =
+        Array(16).fill(0);
+
     let score = 0;
-    let touchStartX = 0;
-    let touchStartY = 0;
+
 
     function addTile() {
-        const empty = [];
 
-        board.forEach((value, index) => {
-            if (value === 0) {
-                empty.push(index);
-            }
-        });
+        const empty =
+            board
+                .map(
+                    (value, index) =>
+                        value
+                            ? null
+                            : index
+                )
+                .filter(
+                    index =>
+                        index !== null
+                );
+
 
         if (!empty.length) {
             return;
         }
 
-        const index =
-            empty[randomInt(0, empty.length - 1)];
 
-        board[index] = Math.random() < 0.9 ? 2 : 4;
+        const index =
+            empty[
+                Math.floor(
+                    Math.random() *
+                    empty.length
+                )
+            ];
+
+
+        board[index] =
+            Math.random() < 0.9
+                ? 2
+                : 4;
+
     }
+
 
     function render() {
-        gridElement.innerHTML = "";
 
-        board.forEach(value => {
-            const tile = document.createElement("div");
+        grid.innerHTML =
+            board
+                .map(
+                    value => `
+                        <div class="tile-2048">
+                            ${value || ""}
+                        </div>
+                    `
+                )
+                .join("");
 
-            tile.className = "tile-2048";
-            tile.textContent = value || "";
 
-            gridElement.appendChild(tile);
-        });
+        scoreElement.textContent =
+            score;
 
-        scoreElement.textContent = score;
     }
 
-    function slideRow(row) {
-        const values = row.filter(value => value !== 0);
-        const result = [];
-
-        for (let i = 0; i < values.length; i++) {
-            if (values[i] === values[i + 1]) {
-                const merged = values[i] * 2;
-
-                result.push(merged);
-                score += merged;
-                i++;
-            } else {
-                result.push(values[i]);
-            }
-        }
-
-        while (result.length < 4) {
-            result.push(0);
-        }
-
-        return result;
-    }
 
     function move(direction) {
-        const oldBoard = [...board];
 
-        if (direction === "left") {
-            for (let row = 0; row < 4; row++) {
-                const start = row * 4;
+        const before =
+            board.join(",");
 
-                board.splice(
-                    start,
-                    4,
-                    ...slideRow(board.slice(start, start + 4))
-                );
+
+        for (
+            let line = 0;
+            line < 4;
+            line++
+        ) {
+
+            let indexes;
+
+
+            if (direction === "left") {
+
+                indexes =
+                    [0, 1, 2, 3]
+                        .map(
+                            n =>
+                                line * 4 + n
+                        );
+
+            } else if (
+                direction === "right"
+            ) {
+
+                indexes =
+                    [3, 2, 1, 0]
+                        .map(
+                            n =>
+                                line * 4 + n
+                        );
+
+            } else if (
+                direction === "up"
+            ) {
+
+                indexes =
+                    [0, 1, 2, 3]
+                        .map(
+                            n =>
+                                n * 4 + line
+                        );
+
+            } else {
+
+                indexes =
+                    [3, 2, 1, 0]
+                        .map(
+                            n =>
+                                n * 4 + line
+                        );
+
             }
-        }
 
-        if (direction === "right") {
-            for (let row = 0; row < 4; row++) {
-                const start = row * 4;
 
-                const result = slideRow(
-                    board
-                        .slice(start, start + 4)
-                        .reverse()
-                ).reverse();
+            let values =
+                indexes
+                    .map(
+                        index =>
+                            board[index]
+                    )
+                    .filter(
+                        value =>
+                            value !== 0
+                    );
 
-                board.splice(start, 4, ...result);
-            }
-        }
 
-        if (direction === "up") {
-            for (let col = 0; col < 4; col++) {
-                const column = [];
+            for (
+                let i = 0;
+                i < values.length - 1;
+                i++
+            ) {
 
-                for (let row = 0; row < 4; row++) {
-                    column.push(board[row * 4 + col]);
+                if (
+                    values[i] ===
+                    values[i + 1]
+                ) {
+
+                    values[i] *= 2;
+
+                    score +=
+                        values[i];
+
+                    values.splice(
+                        i + 1,
+                        1
+                    );
+
                 }
 
-                const result = slideRow(column);
-
-                for (let row = 0; row < 4; row++) {
-                    board[row * 4 + col] = result[row];
-                }
             }
+
+
+            while (
+                values.length < 4
+            ) {
+
+                values.push(0);
+
+            }
+
+
+            indexes.forEach(
+                (index, position) => {
+
+                    board[index] =
+                        values[position];
+
+                }
+            );
+
         }
 
-        if (direction === "down") {
-            for (let col = 0; col < 4; col++) {
-                const column = [];
 
-                for (let row = 0; row < 4; row++) {
-                    column.push(board[row * 4 + col]);
-                }
+        if (
+            before !==
+            board.join(",")
+        ) {
 
-                const result = slideRow(column.reverse())
-                    .reverse();
-
-                for (let row = 0; row < 4; row++) {
-                    board[row * 4 + col] = result[row];
-                }
-            }
-        }
-
-        const changed = board.some(
-            (value, index) => value !== oldBoard[index]
-        );
-
-        if (changed) {
             addTile();
-            render();
 
-            if (board.includes(2048)) {
-                showMessage(
-                    "🏆",
-                    "2048 Reached!",
-                    `Amazing! Your score is ${score}.`,
-                    "Continue",
-                    () => {}
-                );
-            } else if (!canMove()) {
-                gameEndMessage("Game Over!", score);
-            }
         }
+
+
+        render();
+
     }
 
-    function canMove() {
-        if (board.includes(0)) {
-            return true;
-        }
 
-        for (let row = 0; row < 4; row++) {
-            for (let col = 0; col < 4; col++) {
-                const index = row * 4 + col;
+    function keyboardHandler(event) {
 
-                if (
-                    col < 3 &&
-                    board[index] === board[index + 1]
-                ) {
-                    return true;
-                }
-
-                if (
-                    row < 3 &&
-                    board[index] === board[index + 4]
-                ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    function keyHandler(event) {
         const map = {
+
             ArrowLeft: "left",
             ArrowRight: "right",
             ArrowUp: "up",
             ArrowDown: "down"
+
         };
 
-        if (map[event.key]) {
-            event.preventDefault();
-            move(map[event.key]);
-        }
-    }
 
-    function touchStart(event) {
-        const touch = event.touches[0];
+        const direction =
+            map[event.key];
 
-        touchStartX = touch.clientX;
-        touchStartY = touch.clientY;
-    }
 
-    function touchEnd(event) {
-        const touch = event.changedTouches[0];
-
-        const dx = touch.clientX - touchStartX;
-        const dy = touch.clientY - touchStartY;
-
-        if (Math.max(Math.abs(dx), Math.abs(dy)) < 30) {
+        if (!direction) {
             return;
         }
 
-        if (Math.abs(dx) > Math.abs(dy)) {
-            move(dx > 0 ? "right" : "left");
-        } else {
-            move(dy > 0 ? "down" : "up");
-        }
+
+        event.preventDefault();
+
+        move(direction);
+
     }
 
-    window.addEventListener("keydown", keyHandler);
 
-    gameContainer.addEventListener("touchstart", touchStart, {
-        passive: true
-    });
+    document.addEventListener(
+        "keydown",
+        keyboardHandler
+    );
 
-    gameContainer.addEventListener("touchend", touchEnd, {
-        passive: true
-    });
 
     addTile();
     addTile();
+
     render();
 
+
     return () => {
-        window.removeEventListener("keydown", keyHandler);
-        gameContainer.removeEventListener("touchstart", touchStart);
-        gameContainer.removeEventListener("touchend", touchEnd);
+
+        document.removeEventListener(
+            "keydown",
+            keyboardHandler
+        );
+
     };
+
 }
+
 
 /* =========================================================
    MEMORY MATCH
-   ========================================================= */
+========================================================= */
 
-function startMemory() {
+function launchMemory() {
+
     const symbols = [
-        "🍎", "🍌", "🍇", "🍉",
-        "🍎", "🍌", "🍇", "🍉",
-        "🚗", "🚀", "⚽", "🎯",
-        "🚗", "🚀", "⚽", "🎯"
+        "🍎",
+        "🚀",
+        "🎮",
+        "🐱",
+        "⚽",
+        "🌟",
+        "🍕",
+        "🦊"
     ];
 
-    const cards = shuffle(symbols);
 
-    setGameContent(`
+    const deck =
+        [...symbols, ...symbols]
+            .sort(
+                () =>
+                    Math.random() - 0.5
+            );
+
+
+    gameContainer.innerHTML = `
         <div class="game-info-bar">
-            <span>Moves: <b id="memoryMoves">0</b></span>
-            <span>Pairs: <b id="memoryPairs">0</b>/8</span>
+            <span>Moves</span>
+            <strong class="score-value">
+                0
+            </strong>
         </div>
 
-        <div id="memoryGrid" class="memory-grid"></div>
-    `);
+        <div
+            class="memory-grid"
+            id="memoryGrid"
+        ></div>
+    `;
 
-    const grid = document.getElementById("memoryGrid");
-    const movesElement = document.getElementById("memoryMoves");
-    const pairsElement = document.getElementById("memoryPairs");
 
-    let first = null;
-    let second = null;
+    const grid =
+        document.getElementById(
+            "memoryGrid"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    let firstCard = null;
     let locked = false;
     let moves = 0;
-    let pairs = 0;
-    let flipTimer = null;
+    let matched = 0;
 
-    cards.forEach((symbol, index) => {
-        const button = document.createElement("button");
 
-        button.className = "memory-card";
-        button.textContent = "?";
+    grid.innerHTML =
+        deck
+            .map(
+                (symbol, index) => `
+                    <button
+                        class="memory-card"
+                        data-index="${index}"
+                    >
+                        ?
+                    </button>
+                `
+            )
+            .join("");
 
-        button.addEventListener("click", () => {
-            if (
-                locked ||
-                button.classList.contains("flipped") ||
-                button.classList.contains("matched")
-            ) {
-                return;
-            }
 
-            button.classList.add("flipped");
-            button.textContent = symbol;
+    const cards =
+        [...grid.children];
 
-            if (!first) {
-                first = {
-                    button,
-                    symbol
-                };
 
-                return;
-            }
+    cards.forEach(
+        (card, index) => {
 
-            second = {
-                button,
-                symbol
-            };
+            card.addEventListener(
+                "click",
+                () => {
 
-            moves++;
-            movesElement.textContent = moves;
+                    if (
+                        locked ||
+                        card.classList.contains(
+                            "matched"
+                        ) ||
+                        card === firstCard
+                    ) {
+                        return;
+                    }
 
-            if (first.symbol === second.symbol) {
-                first.button.classList.add("matched");
-                second.button.classList.add("matched");
 
-                first = null;
-                second = null;
+                    card.textContent =
+                        deck[index];
 
-                pairs++;
-                pairsElement.textContent = pairs;
+                    card.classList.add(
+                        "revealed"
+                    );
 
-                if (pairs === 8) {
-                    saveHighScore("memory", Math.max(1, 1000 - moves));
 
-                    setTimeout(() => {
-                        showMessage(
-                            "🧠",
-                            "You Won!",
-                            `All pairs found in ${moves} moves.`,
-                            "Play Again",
-                            () => restartCurrentGame()
+                    if (!firstCard) {
+
+                        firstCard = card;
+
+                        return;
+
+                    }
+
+
+                    moves++;
+
+                    scoreElement.textContent =
+                        moves;
+
+
+                    const firstIndex =
+                        Number(
+                            firstCard.dataset.index
                         );
-                    }, 300);
+
+
+                    if (
+                        deck[index] ===
+                        deck[firstIndex]
+                    ) {
+
+                        card.classList.add(
+                            "matched"
+                        );
+
+                        firstCard.classList.add(
+                            "matched"
+                        );
+
+
+                        matched += 2;
+
+                        firstCard = null;
+
+
+                        if (
+                            matched ===
+                            deck.length
+                        ) {
+
+                            setHighScore(
+                                "memory",
+                                Math.max(
+                                    1,
+                                    100 - moves
+                                )
+                            );
+
+
+                            showMessage(
+                                "You Won!",
+                                `Completed in ${moves} moves.`,
+                                "🧠"
+                            );
+
+                        }
+
+                    } else {
+
+                        locked = true;
+
+
+                        setTimeout(() => {
+
+                            card.textContent =
+                                "?";
+
+                            firstCard.textContent =
+                                "?";
+
+
+                            card.classList.remove(
+                                "revealed"
+                            );
+
+                            firstCard.classList.remove(
+                                "revealed"
+                            );
+
+
+                            firstCard = null;
+                            locked = false;
+
+                        }, 650);
+
+                    }
+
                 }
-            } else {
-                locked = true;
+            );
 
-                flipTimer = setTimeout(() => {
-                    first.button.classList.remove("flipped");
-                    first.button.textContent = "?";
-
-                    second.button.classList.remove("flipped");
-                    second.button.textContent = "?";
-
-                    first = null;
-                    second = null;
-                    locked = false;
-                }, 700);
-            }
-        });
-
-        grid.appendChild(button);
-    });
-
-    return () => {
-        if (flipTimer) {
-            clearTimeout(flipTimer);
         }
-    };
+    );
+
+
+    return () => {};
+
 }
+
 
 /* =========================================================
    REACTION TEST
-   ========================================================= */
+========================================================= */
 
-function startReaction() {
-    setGameContent(`
+function launchReaction() {
+
+    gameContainer.innerHTML = `
         <div class="game-info-bar">
-            <span>Best: ${getHighScore("reaction")} ms</span>
+            <span>Reaction</span>
+            <strong class="score-value">
+                0 ms
+            </strong>
         </div>
 
-        <div id="reactionBox" class="reaction-box">
-            Click to start
+        <div
+            class="reaction-box waiting"
+            id="reactionBox"
+        >
+            Tap to start
         </div>
-    `);
 
-    const box = document.getElementById("reactionBox");
+        <p id="reactionText">
+            Wait for green.
+        </p>
+    `;
 
-    let state = "start";
+
+    const boxElement =
+        document.getElementById(
+            "reactionBox"
+        );
+
+
+    const textElement =
+        document.getElementById(
+            "reactionText"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
     let timer = null;
     let startTime = 0;
+    let waiting = false;
+    let ready = false;
 
-    function clickHandler() {
-        if (state === "start") {
-            state = "waiting";
 
-            box.className = "reaction-box waiting";
-            box.textContent = "Wait for green...";
+    boxElement.addEventListener(
+        "click",
+        () => {
 
-            const delay = randomInt(1200, 3500);
+            if (!waiting && !ready) {
 
-            timer = setTimeout(() => {
-                state = "ready";
-                startTime = performance.now();
+                waiting = true;
+                ready = false;
 
-                box.className = "reaction-box ready";
-                box.textContent = "CLICK NOW!";
-            }, delay);
 
-            return;
-        }
+                boxElement.className =
+                    "reaction-box waiting";
 
-        if (state === "waiting") {
-            if (timer) {
+                boxElement.textContent =
+                    "Wait…";
+
+
+                timer =
+                    setTimeout(
+                        () => {
+
+                            waiting = false;
+                            ready = true;
+
+                            boxElement.className =
+                                "reaction-box ready";
+
+                            boxElement.textContent =
+                                "CLICK!";
+
+                            startTime =
+                                performance.now();
+
+                        },
+                        1000 +
+                        Math.random() * 2500
+                    );
+
+
+                return;
+
+            }
+
+
+            if (waiting) {
+
                 clearTimeout(timer);
+
+                waiting = false;
+
+                boxElement.textContent =
+                    "Too soon!";
+
+                textElement.textContent =
+                    "Tap to try again.";
+
+                return;
+
             }
 
-            state = "start";
-            box.className = "reaction-box";
-            box.textContent = "Too early! Click to try again.";
 
-            return;
-        }
+            if (ready) {
 
-        if (state === "ready") {
-            const reaction =
-                Math.round(performance.now() - startTime);
+                const reaction =
+                    Math.round(
+                        performance.now() -
+                        startTime
+                    );
 
-            state = "result";
 
-            box.className = "reaction-box";
-            box.textContent = `${reaction} ms — Click to try again`;
+                ready = false;
 
-            if (
-                !getHighScore("reaction") ||
-                reaction < getHighScore("reaction")
-            ) {
-                scores.reaction = reaction;
-                saveScores();
+                scoreElement.textContent =
+                    `${reaction} ms`;
+
+
+                textElement.textContent =
+                    "Good! Tap to try again.";
+
+
+                if (
+                    getHighScore(
+                        "reaction"
+                    ) === 0 ||
+                    reaction <
+                    getHighScore(
+                        "reaction"
+                    )
+                ) {
+
+                    scores.reaction =
+                        reaction;
+
+                    saveScores();
+
+                }
+
+
+                boxElement.className =
+                    "reaction-box waiting";
+
+                boxElement.textContent =
+                    `${reaction} ms`;
+
             }
 
-            return;
         }
+    );
 
-        state = "start";
-        box.className = "reaction-box";
-        box.textContent = "Click to start";
-    }
-
-    box.addEventListener("click", clickHandler);
 
     return () => {
-        if (timer) {
-            clearTimeout(timer);
-        }
 
-        box.removeEventListener("click", clickHandler);
+        clearTimeout(timer);
+
     };
+
 }
+
 
 /* =========================================================
    NUMBER GUESS
-   ========================================================= */
+========================================================= */
 
-function startNumberGuess() {
-    setGameContent(`
-        <h2>Guess 1–100</h2>
+function launchNumberGuess() {
 
-        <p id="guessHint">
-            You have 7 attempts.
-        </p>
+    const secret =
+        Math.floor(
+            Math.random() * 100
+        ) + 1;
 
-        <div style="margin-top:18px;">
-            <input
-                id="guessInput"
-                class="game-input"
-                type="number"
-                min="1"
-                max="100"
-                placeholder="Enter number"
-            >
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Attempts</span>
+            <strong class="score-value">
+                0
+            </strong>
         </div>
 
+        <h3>
+            Guess a number from 1 to 100
+        </h3>
+
+        <input
+            class="game-input"
+            id="guessInput"
+            type="number"
+            min="1"
+            max="100"
+            placeholder="Enter number"
+        >
+
         <button
-            id="guessButton"
             class="game-button"
-            style="margin-top:12px;"
+            id="guessButton"
+            type="button"
         >
             Guess
         </button>
 
-        <div class="game-info-bar" style="margin-top:20px;">
-            <span>Attempts: <b id="guessAttempts">0</b>/7</span>
-        </div>
-    `);
+        <p id="guessMessage"></p>
+    `;
 
-    const input = document.getElementById("guessInput");
-    const button = document.getElementById("guessButton");
-    const hint = document.getElementById("guessHint");
-    const attemptsElement =
-        document.getElementById("guessAttempts");
 
-    const secret = randomInt(1, 100);
-
-    let attempts = 0;
-    let finished = false;
-
-    function guess() {
-        if (finished) {
-            return;
-        }
-
-        const value = Number(input.value);
-
-        if (
-            !Number.isInteger(value) ||
-            value < 1 ||
-            value > 100
-        ) {
-            hint.textContent =
-                "Please enter a number from 1 to 100.";
-
-            return;
-        }
-
-        attempts++;
-        attemptsElement.textContent = attempts;
-
-        if (value === secret) {
-            finished = true;
-
-            const score = Math.max(
-                10,
-                100 - (attempts - 1) * 10
-            );
-
-            saveHighScore("numberguess", score);
-
-            showMessage(
-                "🎯",
-                "Correct!",
-                `You found the number in ${attempts} attempts.`,
-                "Play Again",
-                () => restartCurrentGame()
-            );
-
-            return;
-        }
-
-        if (attempts >= 7) {
-            finished = true;
-
-            showMessage(
-                "🎮",
-                "Game Over",
-                `The number was ${secret}.`,
-                "Play Again",
-                () => restartCurrentGame()
-            );
-
-            return;
-        }
-
-        hint.textContent =
-            value < secret
-                ? "Too low! Try a higher number."
-                : "Too high! Try a lower number.";
-
-        input.value = "";
-        input.focus();
-    }
-
-    button.addEventListener("click", guess);
-
-    input.addEventListener("keydown", event => {
-        if (event.key === "Enter") {
-            guess();
-        }
-    });
-
-    input.focus();
-
-    return () => {};
-}
-
-/* =========================================================
-   PONG
-   ========================================================= */
-
-function startPong() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>You: <b id="pongPlayer">0</b></span>
-            <span>Computer: <b id="pongAI">0</b></span>
-        </div>
-
-        <canvas
-            id="pongCanvas"
-            class="game-canvas"
-            width="500"
-            height="300"
-        ></canvas>
-
-        <p style="margin-top:12px;">
-            Move with Arrow Keys, W/S, or mouse.
-        </p>
-    `);
-
-    const canvas = document.getElementById("pongCanvas");
-    const ctx = canvas.getContext("2d");
-
-    const playerElement =
-        document.getElementById("pongPlayer");
-
-    const aiElement =
-        document.getElementById("pongAI");
-
-    let playerY = 120;
-    let aiY = 120;
-
-    const paddleWidth = 10;
-    const paddleHeight = 70;
-
-    let ball = {
-        x: 250,
-        y: 150,
-        vx: 4,
-        vy: 3
-    };
-
-    let playerScore = 0;
-    let aiScore = 0;
-
-    let animation = null;
-    let keys = {};
-
-    function resetBall(direction) {
-        ball = {
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            vx: direction * 4,
-            vy: randomInt(-3, 3) || 2
-        };
-    }
-
-    function draw() {
-        ctx.fillStyle = "#111827";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.strokeStyle = "rgba(255,255,255,0.2)";
-        ctx.setLineDash([8, 8]);
-        ctx.beginPath();
-        ctx.moveTo(canvas.width / 2, 0);
-        ctx.lineTo(canvas.width / 2, canvas.height);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        ctx.fillStyle = "#7c7df7";
-
-        ctx.fillRect(
-            15,
-            playerY,
-            paddleWidth,
-            paddleHeight
+    const input =
+        document.getElementById(
+            "guessInput"
         );
 
-        ctx.fillRect(
-            canvas.width - 25,
-            aiY,
-            paddleWidth,
-            paddleHeight
+
+    const button =
+        document.getElementById(
+            "guessButton"
         );
 
-        ctx.fillStyle = "#ffffff";
 
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, 7, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    function update() {
-        if (keys.ArrowUp || keys.w) {
-            playerY -= 6;
-        }
-
-        if (keys.ArrowDown || keys.s) {
-            playerY += 6;
-        }
-
-        playerY = Math.max(
-            0,
-            Math.min(canvas.height - paddleHeight, playerY)
+    const message =
+        document.getElementById(
+            "guessMessage"
         );
 
-        const target = ball.y - paddleHeight / 2;
-
-        aiY += (target - aiY) * 0.06;
-
-        aiY = Math.max(
-            0,
-            Math.min(canvas.height - paddleHeight, aiY)
-        );
-
-        ball.x += ball.vx;
-        ball.y += ball.vy;
-
-        if (
-            ball.y <= 7 ||
-            ball.y >= canvas.height - 7
-        ) {
-            ball.vy *= -1;
-        }
-
-        if (
-            ball.x - 7 <= 25 &&
-            ball.y >= playerY &&
-            ball.y <= playerY + paddleHeight &&
-            ball.vx < 0
-        ) {
-            ball.vx = Math.abs(ball.vx) + 0.15;
-
-            const hit =
-                (ball.y - (playerY + paddleHeight / 2)) /
-                (paddleHeight / 2);
-
-            ball.vy = hit * 5;
-        }
-
-        if (
-            ball.x + 7 >= canvas.width - 25 &&
-            ball.y >= aiY &&
-            ball.y <= aiY + paddleHeight &&
-            ball.vx > 0
-        ) {
-            ball.vx = -Math.abs(ball.vx) - 0.15;
-
-            const hit =
-                (ball.y - (aiY + paddleHeight / 2)) /
-                (paddleHeight / 2);
-
-            ball.vy = hit * 5;
-        }
-
-        if (ball.x < -20) {
-            aiScore++;
-            aiElement.textContent = aiScore;
-
-            if (aiScore >= 5) {
-                endPong();
-                return;
-            }
-
-            resetBall(1);
-        }
-
-        if (ball.x > canvas.width + 20) {
-            playerScore++;
-            playerElement.textContent = playerScore;
-
-            if (playerScore >= 5) {
-                endPong();
-                return;
-            }
-
-            resetBall(-1);
-        }
-
-        draw();
-        animation = requestAnimationFrame(update);
-    }
-
-    function endPong() {
-        if (animation) {
-            cancelAnimationFrame(animation);
-        }
-
-        const score = playerScore * 100;
-
-        saveHighScore("pong", score);
-
-        showMessage(
-            playerScore > aiScore ? "🏆" : "🏓",
-            playerScore > aiScore ? "You Win!" : "Game Over",
-            `Final score: ${playerScore} - ${aiScore}`,
-            "Play Again",
-            () => restartCurrentGame()
-        );
-    }
-
-    function keyDown(event) {
-        keys[event.key] = true;
-
-        if (
-            ["ArrowUp", "ArrowDown", " "].includes(event.key)
-        ) {
-            event.preventDefault();
-        }
-    }
-
-    function keyUp(event) {
-        keys[event.key] = false;
-    }
-
-    function mouseMove(event) {
-        const rect = canvas.getBoundingClientRect();
-
-        const y =
-            (event.clientY - rect.top) *
-            (canvas.height / rect.height);
-
-        playerY = y - paddleHeight / 2;
-    }
-
-    window.addEventListener("keydown", keyDown);
-    window.addEventListener("keyup", keyUp);
-    canvas.addEventListener("mousemove", mouseMove);
-
-    draw();
-    animation = requestAnimationFrame(update);
-
-    return () => {
-        if (animation) {
-            cancelAnimationFrame(animation);
-        }
-
-        window.removeEventListener("keydown", keyDown);
-        window.removeEventListener("keyup", keyUp);
-        canvas.removeEventListener("mousemove", mouseMove);
-    };
-}
-
-/* =========================================================
-   BREAKOUT
-   ========================================================= */
-
-function startBreakout() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Score: <b id="breakoutScore">0</b></span>
-            <span>Lives: <b id="breakoutLives">3</b></span>
-        </div>
-
-        <canvas
-            id="breakoutCanvas"
-            class="game-canvas"
-            width="500"
-            height="360"
-        ></canvas>
-
-        <p style="margin-top:12px;">
-            Move with Arrow Keys or mouse.
-        </p>
-    `);
-
-    const canvas = document.getElementById("breakoutCanvas");
-    const ctx = canvas.getContext("2d");
 
     const scoreElement =
-        document.getElementById("breakoutScore");
-
-    const livesElement =
-        document.getElementById("breakoutLives");
-
-    const paddle = {
-        x: 210,
-        y: 330,
-        width: 80,
-        height: 10,
-        speed: 7
-    };
-
-    let ball = {
-        x: 250,
-        y: 300,
-        vx: 4,
-        vy: -4,
-        radius: 7
-    };
-
-    const rows = 5;
-    const cols = 8;
-    const bricks = [];
-
-    for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-            bricks.push({
-                x: 25 + col * 59,
-                y: 30 + row * 25,
-                width: 50,
-                height: 16,
-                alive: true
-            });
-        }
-    }
-
-    let score = 0;
-    let lives = 3;
-    let keys = {};
-    let animation = null;
-    let stopped = false;
-
-    function resetBall() {
-        ball = {
-            x: canvas.width / 2,
-            y: canvas.height - 55,
-            vx: Math.random() < 0.5 ? -4 : 4,
-            vy: -4,
-            radius: 7
-        };
-    }
-
-    function draw() {
-        ctx.fillStyle = "#111827";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        bricks.forEach(brick => {
-            if (!brick.alive) {
-                return;
-            }
-
-            ctx.fillStyle = "#7c7df7";
-
-            ctx.fillRect(
-                brick.x,
-                brick.y,
-                brick.width,
-                brick.height
-            );
-        });
-
-        ctx.fillStyle = "#ffffff";
-
-        ctx.fillRect(
-            paddle.x,
-            paddle.y,
-            paddle.width,
-            paddle.height
+        gameContainer.querySelector(
+            ".score-value"
         );
 
-        ctx.beginPath();
-        ctx.arc(
-            ball.x,
-            ball.y,
-            ball.radius,
-            0,
-            Math.PI * 2
-        );
-        ctx.fill();
-    }
 
-    function endGame(win) {
-        stopped = true;
+    let attempts = 0;
 
-        if (animation) {
-            cancelAnimationFrame(animation);
-        }
 
-        saveHighScore("breakout", score);
+    function guess() {
 
-        showMessage(
-            win ? "🏆" : "🧱",
-            win ? "You Win!" : "Game Over",
-            `Score: ${score}`,
-            "Play Again",
-            () => restartCurrentGame()
-        );
-    }
+        const number =
+            Number(input.value);
 
-    function update() {
-        if (stopped) {
-            return;
-        }
-
-        if (keys.ArrowLeft) {
-            paddle.x -= paddle.speed;
-        }
-
-        if (keys.ArrowRight) {
-            paddle.x += paddle.speed;
-        }
-
-        paddle.x = Math.max(
-            0,
-            Math.min(
-                canvas.width - paddle.width,
-                paddle.x
-            )
-        );
-
-        ball.x += ball.vx;
-        ball.y += ball.vy;
 
         if (
-            ball.x - ball.radius <= 0 ||
-            ball.x + ball.radius >= canvas.width
+            !Number.isInteger(number) ||
+            number < 1 ||
+            number > 100
         ) {
-            ball.vx *= -1;
-        }
 
-        if (ball.y - ball.radius <= 0) {
-            ball.vy *= -1;
-        }
-
-        if (
-            ball.y + ball.radius >= paddle.y &&
-            ball.y - ball.radius <= paddle.y + paddle.height &&
-            ball.x >= paddle.x &&
-            ball.x <= paddle.x + paddle.width &&
-            ball.vy > 0
-        ) {
-            ball.vy = -Math.abs(ball.vy);
-
-            const hit =
-                (ball.x -
-                    (paddle.x + paddle.width / 2)) /
-                (paddle.width / 2);
-
-            ball.vx = hit * 5;
-        }
-
-        bricks.forEach(brick => {
-            if (!brick.alive) {
-                return;
-            }
-
-            if (
-                ball.x + ball.radius > brick.x &&
-                ball.x - ball.radius <
-                    brick.x + brick.width &&
-                ball.y + ball.radius > brick.y &&
-                ball.y - ball.radius <
-                    brick.y + brick.height
-            ) {
-                brick.alive = false;
-                ball.vy *= -1;
-
-                score += 10;
-                scoreElement.textContent = score;
-
-                if (
-                    bricks.every(
-                        item => !item.alive
-                    )
-                ) {
-                    endGame(true);
-                }
-            }
-        });
-
-        if (ball.y > canvas.height + 20) {
-            lives--;
-            livesElement.textContent = lives;
-
-            if (lives <= 0) {
-                endGame(false);
-                return;
-            }
-
-            resetBall();
-        }
-
-        draw();
-
-        animation = requestAnimationFrame(update);
-    }
-
-    function keyDown(event) {
-        keys[event.key] = true;
-    }
-
-    function keyUp(event) {
-        keys[event.key] = false;
-    }
-
-    function mouseMove(event) {
-        const rect = canvas.getBoundingClientRect();
-
-        paddle.x =
-            (event.clientX - rect.left) *
-                (canvas.width / rect.width) -
-            paddle.width / 2;
-    }
-
-    window.addEventListener("keydown", keyDown);
-    window.addEventListener("keyup", keyUp);
-    canvas.addEventListener("mousemove", mouseMove);
-
-    draw();
-    animation = requestAnimationFrame(update);
-
-    return () => {
-        stopped = true;
-
-        if (animation) {
-            cancelAnimationFrame(animation);
-        }
-
-        window.removeEventListener("keydown", keyDown);
-        window.removeEventListener("keyup", keyUp);
-        canvas.removeEventListener("mousemove", mouseMove);
-    };
-}
-
-/* =========================================================
-   MINESWEEPER
-   ========================================================= */
-
-function startMinesweeper() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Mines: <b id="mineCount">10</b></span>
-            <span>Flags: <b id="flagCount">0</b></span>
-        </div>
-
-        <div id="mineGrid" class="mine-grid"></div>
-
-        <p style="margin-top:15px;">
-            Left click = reveal | Right click = flag
-        </p>
-    `);
-
-    const gridElement = document.getElementById("mineGrid");
-    const mineCountElement =
-        document.getElementById("mineCount");
-    const flagCountElement =
-        document.getElementById("flagCount");
-
-    const size = 8;
-    const totalMines = 10;
-
-    let cells = [];
-    let flags = 0;
-    let gameOver = false;
-
-    function createBoard() {
-        cells = Array.from(
-            { length: size * size },
-            (_, index) => ({
-                index,
-                mine: false,
-                revealed: false,
-                flagged: false,
-                number: 0
-            })
-        );
-
-        const mineIndexes = shuffle(
-            Array.from(
-                { length: size * size },
-                (_, index) => index
-            )
-        ).slice(0, totalMines);
-
-        mineIndexes.forEach(index => {
-            cells[index].mine = true;
-        });
-
-        cells.forEach(cell => {
-            if (cell.mine) {
-                return;
-            }
-
-            const neighbors = getMineNeighbors(
-                cell.index
-            );
-
-            cell.number = neighbors.filter(
-                item => cells[item].mine
-            ).length;
-        });
-    }
-
-    function getMineNeighbors(index) {
-        const row = Math.floor(index / size);
-        const col = index % size;
-        const result = [];
-
-        for (let dr = -1; dr <= 1; dr++) {
-            for (let dc = -1; dc <= 1; dc++) {
-                if (dr === 0 && dc === 0) {
-                    continue;
-                }
-
-                const nr = row + dr;
-                const nc = col + dc;
-
-                if (
-                    nr >= 0 &&
-                    nr < size &&
-                    nc >= 0 &&
-                    nc < size
-                ) {
-                    result.push(nr * size + nc);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    function reveal(index) {
-        const cell = cells[index];
-
-        if (
-            gameOver ||
-            cell.revealed ||
-            cell.flagged
-        ) {
-            return;
-        }
-
-        cell.revealed = true;
-
-        if (cell.mine) {
-            gameOver = true;
-
-            cells.forEach(item => {
-                if (item.mine) {
-                    item.revealed = true;
-                }
-            });
-
-            render();
-
-            showMessage(
-                "💣",
-                "Boom!",
-                "You hit a mine.",
-                "Play Again",
-                () => restartCurrentGame()
-            );
+            message.textContent =
+                "Enter a number between 1 and 100.";
 
             return;
+
         }
 
-        if (cell.number === 0) {
-            getMineNeighbors(index).forEach(
-                neighbor => {
-                    if (!cells[neighbor].mine) {
-                        reveal(neighbor);
-                    }
-                }
-            );
-        }
 
-        render();
+        attempts++;
 
-        const safeCells = cells.filter(
-            item => !item.mine
-        );
+        scoreElement.textContent =
+            attempts;
 
-        if (
-            safeCells.every(
-                item => item.revealed
-            )
-        ) {
-            gameOver = true;
 
-            saveHighScore(
-                "minesweeper",
+        if (number === secret) {
+
+            message.textContent =
+                `Correct! The number was ${secret}.`;
+
+
+            setHighScore(
+                "numberguess",
                 Math.max(
                     1,
-                    1000 - flags * 10
+                    101 - attempts
                 )
             );
 
-            showMessage(
-                "🎉",
-                "Board Cleared!",
-                "You found all safe cells.",
-                "Play Again",
-                () => restartCurrentGame()
-            );
-        }
-    }
 
-    function toggleFlag(index, event) {
-        event.preventDefault();
+            button.disabled = true;
+            input.disabled = true;
 
-        const cell = cells[index];
 
-        if (
-            gameOver ||
-            cell.revealed
-        ) {
-            return;
+        } else if (number < secret) {
+
+            message.textContent =
+                "Too low!";
+
+
+        } else {
+
+            message.textContent =
+                "Too high!";
+
         }
 
-        cell.flagged = !cell.flagged;
-
-        flags += cell.flagged ? 1 : -1;
-
-        flagCountElement.textContent = flags;
-
-        render();
     }
 
-    function render() {
-        gridElement.innerHTML = "";
 
-        cells.forEach(cell => {
-            const button = document.createElement("button");
-
-            button.className = "mine-cell";
-
-            if (cell.revealed) {
-                button.classList.add("revealed");
-
-                if (cell.mine) {
-                    button.classList.add("mine");
-                    button.textContent = "💣";
-                } else if (cell.number > 0) {
-                    button.textContent =
-                        cell.number;
-                }
-            } else if (cell.flagged) {
-                button.textContent = "🚩";
-            }
-
-            button.addEventListener(
-                "click",
-                () => reveal(cell.index)
-            );
-
-            button.addEventListener(
-                "contextmenu",
-                event =>
-                    toggleFlag(cell.index, event)
-            );
-
-            gridElement.appendChild(button);
-        });
-
-        mineCountElement.textContent =
-            totalMines;
-    }
-
-    createBoard();
-    render();
-
-    return () => {};
-}
-
-/* =========================================================
-   CONNECT FOUR
-   ========================================================= */
-
-function startConnectFour() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span id="connectStatus">Red's turn</span>
-        </div>
-
-        <div id="connectBoard" class="connect-board"></div>
-    `);
-
-    const boardElement =
-        document.getElementById("connectBoard");
-
-    const statusElement =
-        document.getElementById("connectStatus");
-
-    const rows = 6;
-    const cols = 7;
-
-    let board = Array.from(
-        { length: rows },
-        () => Array(cols).fill("")
+    button.addEventListener(
+        "click",
+        guess
     );
 
-    let player = "R";
-    let gameOver = false;
 
-    function render() {
-        boardElement.innerHTML = "";
+    input.addEventListener(
+        "keydown",
+        event => {
 
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                const cell = document.createElement("button");
+            if (
+                event.key === "Enter"
+            ) {
 
-                cell.className = "connect-cell";
+                guess();
 
-                const value = board[row][col];
-
-                if (value === "R") {
-                    cell.style.background = "#e05252";
-                }
-
-                if (value === "Y") {
-                    cell.style.background = "#e6b84c";
-                }
-
-                cell.addEventListener("click", () => {
-                    makeMove(col);
-                });
-
-                boardElement.appendChild(cell);
             }
+
         }
-    }
+    );
 
-    function makeMove(col) {
-        if (gameOver) {
-            return;
-        }
-
-        let targetRow = -1;
-
-        for (let row = rows - 1; row >= 0; row--) {
-            if (!board[row][col]) {
-                targetRow = row;
-                break;
-            }
-        }
-
-        if (targetRow === -1) {
-            return;
-        }
-
-        board[targetRow][col] = player;
-
-        if (
-            hasFour(
-                targetRow,
-                col,
-                player
-            )
-        ) {
-            gameOver = true;
-
-            statusElement.textContent =
-                `${player === "R" ? "Red" : "Yellow"} wins!`;
-
-            saveHighScore(
-                "connect4",
-                player === "R" ? 1 : 0
-            );
-
-            render();
-
-            showMessage(
-                player === "R" ? "🔴" : "🟡",
-                "Game Over",
-                `${player === "R" ? "Red" : "Yellow"} wins!`,
-                "Play Again",
-                () => restartCurrentGame()
-            );
-
-            return;
-        }
-
-        if (
-            board.every(
-                row => row.every(Boolean)
-            )
-        ) {
-            gameOver = true;
-            statusElement.textContent = "Draw!";
-            render();
-            return;
-        }
-
-        player = player === "R" ? "Y" : "R";
-
-        statusElement.textContent =
-            `${player === "R" ? "Red" : "Yellow"}'s turn`;
-
-        render();
-    }
-
-    function hasFour(row, col, value) {
-        const directions = [
-            [1, 0],
-            [0, 1],
-            [1, 1],
-            [1, -1]
-        ];
-
-        for (const [dr, dc] of directions) {
-            let count = 1;
-
-            count += countDirection(
-                row,
-                col,
-                dr,
-                dc,
-                value
-            );
-
-            count += countDirection(
-                row,
-                col,
-                -dr,
-                -dc,
-                value
-            );
-
-            if (count >= 4) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    function countDirection(
-        row,
-        col,
-        dr,
-        dc,
-        value
-    ) {
-        let count = 0;
-
-        let r = row + dr;
-        let c = col + dc;
-
-        while (
-            r >= 0 &&
-            r < rows &&
-            c >= 0 &&
-            c < cols &&
-            board[r][c] === value
-        ) {
-            count++;
-            r += dr;
-            c += dc;
-        }
-
-        return count;
-    }
-
-    render();
 
     return () => {};
+
 }
+
 
 /* =========================================================
    ROCK PAPER SCISSORS
-   ========================================================= */
+========================================================= */
 
-function startRPS() {
-    setGameContent(`
-        <h2>Choose Your Move</h2>
+function launchRPS() {
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Your Wins</span>
+            <strong class="score-value">
+                0
+            </strong>
+        </div>
 
         <div class="choice-row">
-            <button class="choice-button" data-choice="rock">✊</button>
-            <button class="choice-button" data-choice="paper">✋</button>
-            <button class="choice-button" data-choice="scissors">✌️</button>
+
+            <button
+                class="choice-button"
+                data-choice="rock"
+                type="button"
+            >
+                ✊ Rock
+            </button>
+
+            <button
+                class="choice-button"
+                data-choice="paper"
+                type="button"
+            >
+                ✋ Paper
+            </button>
+
+            <button
+                class="choice-button"
+                data-choice="scissors"
+                type="button"
+            >
+                ✌️ Scissors
+            </button>
+
         </div>
 
-        <div class="game-info-bar" style="margin-top:22px;">
-            <span>You: <b id="rpsPlayer">0</b></span>
-            <span>Computer: <b id="rpsComputer">0</b></span>
+        <p id="rpsResult">
+            Choose your move.
+        </p>
+    `;
+
+
+    const result =
+        document.getElementById(
+            "rpsResult"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    let wins = 0;
+
+
+    gameContainer
+        .querySelectorAll(
+            "[data-choice]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const player =
+                        button.dataset.choice;
+
+
+                    const choices = [
+                        "rock",
+                        "paper",
+                        "scissors"
+                    ];
+
+
+                    const computer =
+                        choices[
+                            Math.floor(
+                                Math.random() *
+                                choices.length
+                            )
+                        ];
+
+
+                    let message;
+
+
+                    if (
+                        player ===
+                        computer
+                    ) {
+
+                        message =
+                            "Draw!";
+
+                    } else if (
+
+                        (
+                            player === "rock" &&
+                            computer === "scissors"
+                        ) ||
+
+                        (
+                            player === "paper" &&
+                            computer === "rock"
+                        ) ||
+
+                        (
+                            player === "scissors" &&
+                            computer === "paper"
+                        )
+
+                    ) {
+
+                        wins++;
+
+                        message =
+                            "You win!";
+
+                    } else {
+
+                        message =
+                            "Computer wins!";
+
+                    }
+
+
+                    scoreElement.textContent =
+                        wins;
+
+
+                    setHighScore(
+                        "rps",
+                        wins
+                    );
+
+
+                    result.textContent =
+                        `You: ${player} • Computer: ${computer} • ${message}`;
+
+                }
+            );
+
+        });
+
+
+    return () => {};
+
+}
+
+
+/* =========================================================
+   TAP COUNTER
+========================================================= */
+
+function launchTap() {
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Taps</span>
+            <strong class="score-value">
+                0
+            </strong>
         </div>
 
-        <p id="rpsResult">Make your choice.</p>
-    `);
+        <button
+            class="game-button"
+            id="tapButton"
+            type="button"
+        >
+            TAP!
+        </button>
 
-    const buttons =
-        document.querySelectorAll(".choice-button");
+        <p>
+            Tap as many times as possible.
+        </p>
+    `;
 
-    const playerElement =
-        document.getElementById("rpsPlayer");
 
-    const computerElement =
-        document.getElementById("rpsComputer");
+    const button =
+        document.getElementById(
+            "tapButton"
+        );
 
-    const resultElement =
-        document.getElementById("rpsResult");
 
-    let playerScore = 0;
-    let computerScore = 0;
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
 
-    const choices = [
-        "rock",
-        "paper",
-        "scissors"
+
+    let taps = 0;
+
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            taps++;
+
+            scoreElement.textContent =
+                taps;
+
+
+            setHighScore(
+                "tap",
+                taps
+            );
+
+        }
+    );
+
+
+    return () => {};
+
+}
+
+
+/* =========================================================
+   MATH SPRINT
+========================================================= */
+
+function launchMathSprint() {
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Points</span>
+            <strong class="score-value">
+                0
+            </strong>
+        </div>
+
+        <h2 id="mathQuestion">
+            Loading...
+        </h2>
+
+        <input
+            class="game-input"
+            id="mathAnswer"
+            type="number"
+            placeholder="Answer"
+        >
+
+        <button
+            class="game-button"
+            id="mathButton"
+            type="button"
+        >
+            Submit
+        </button>
+
+        <p id="mathMessage"></p>
+    `;
+
+
+    const question =
+        document.getElementById(
+            "mathQuestion"
+        );
+
+
+    const answer =
+        document.getElementById(
+            "mathAnswer"
+        );
+
+
+    const button =
+        document.getElementById(
+            "mathButton"
+        );
+
+
+    const message =
+        document.getElementById(
+            "mathMessage"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    let score = 0;
+    let correctAnswer = 0;
+
+
+    function newQuestion() {
+
+        const a =
+            Math.floor(
+                Math.random() * 20
+            ) + 1;
+
+
+        const b =
+            Math.floor(
+                Math.random() * 20
+            ) + 1;
+
+
+        const operations = [
+            "+",
+            "-",
+            "×"
+        ];
+
+
+        const operation =
+            operations[
+                Math.floor(
+                    Math.random() *
+                    operations.length
+                )
+            ];
+
+
+        if (operation === "+") {
+
+            correctAnswer =
+                a + b;
+
+        } else if (
+            operation === "-"
+        ) {
+
+            correctAnswer =
+                a - b;
+
+        } else {
+
+            correctAnswer =
+                a * b;
+
+        }
+
+
+        question.textContent =
+            `${a} ${operation} ${b} = ?`;
+
+
+        answer.value = "";
+
+        answer.focus();
+
+    }
+
+
+    function checkAnswer() {
+
+        if (
+            Number(answer.value) ===
+            correctAnswer
+        ) {
+
+            score++;
+
+            message.textContent =
+                "Correct!";
+
+            setHighScore(
+                "mathsprint",
+                score
+            );
+
+        } else {
+
+            message.textContent =
+                `Correct answer: ${correctAnswer}`;
+
+        }
+
+
+        scoreElement.textContent =
+            score;
+
+
+        newQuestion();
+
+    }
+
+
+    button.addEventListener(
+        "click",
+        checkAnswer
+    );
+
+
+    answer.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                checkAnswer();
+
+            }
+
+        }
+    );
+
+
+    newQuestion();
+
+    return () => {};
+
+}
+
+
+/* =========================================================
+   WORD GUESS
+========================================================= */
+
+function launchWordGuess() {
+
+    const words = [
+        "APPLE",
+        "ROBOT",
+        "GAMES",
+        "SPACE",
+        "MOUSE",
+        "TIGER",
+        "PLANT",
+        "PHONE"
     ];
 
-    function play(choice) {
-        const computer =
-            choices[randomInt(0, 2)];
 
-        if (choice === computer) {
-            resultElement.textContent =
-                `Draw! Computer chose ${computer}.`;
+    const word =
+        words[
+            Math.floor(
+                Math.random() *
+                words.length
+            )
+        ];
 
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Tries</span>
+            <strong class="score-value">
+                0
+            </strong>
+        </div>
+
+        <h2 id="wordDisplay"></h2>
+
+        <input
+            class="game-input"
+            id="letterInput"
+            maxlength="1"
+            placeholder="Enter a letter"
+        >
+
+        <button
+            class="game-button"
+            id="letterButton"
+            type="button"
+        >
+            Guess
+        </button>
+
+        <p id="wordMessage">
+            Guess the hidden word.
+        </p>
+    `;
+
+
+    const display =
+        document.getElementById(
+            "wordDisplay"
+        );
+
+
+    const input =
+        document.getElementById(
+            "letterInput"
+        );
+
+
+    const button =
+        document.getElementById(
+            "letterButton"
+        );
+
+
+    const message =
+        document.getElementById(
+            "wordMessage"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    const guessed =
+        new Set();
+
+
+    let tries = 0;
+
+
+    function renderWord() {
+
+        display.textContent =
+            [...word]
+                .map(
+                    letter =>
+                        guessed.has(letter)
+                            ? letter
+                            : "_"
+                )
+                .join(" ");
+
+    }
+
+
+    function guessLetter() {
+
+        const letter =
+            input.value
+                .trim()
+                .toUpperCase();
+
+
+        if (
+            !/^[A-Z]$/.test(letter)
+        ) {
+
+            message.textContent =
+                "Enter one letter.";
+
+            return;
+
+        }
+
+
+        if (
+            guessed.has(letter)
+        ) {
+
+            message.textContent =
+                "You already tried that letter.";
+
+            return;
+
+        }
+
+
+        guessed.add(letter);
+
+        tries++;
+
+
+        scoreElement.textContent =
+            tries;
+
+
+        renderWord();
+
+
+        if (
+            [...word].every(
+                letter =>
+                    guessed.has(letter)
+            )
+        ) {
+
+            message.textContent =
+                "You guessed the word!";
+
+
+            setHighScore(
+                "wordguess",
+                Math.max(
+                    1,
+                    10 - tries
+                )
+            );
+
+
+            button.disabled = true;
+            input.disabled = true;
+
+
+        } else if (
+            word.includes(letter)
+        ) {
+
+            message.textContent =
+                "Correct letter!";
+
+        } else {
+
+            message.textContent =
+                "That letter is not in the word.";
+
+        }
+
+
+        input.value = "";
+        input.focus();
+
+    }
+
+
+    button.addEventListener(
+        "click",
+        guessLetter
+    );
+
+
+    input.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                guessLetter();
+
+            }
+
+        }
+    );
+
+
+    renderWord();
+
+    return () => {};
+
+}
+
+
+/* =========================================================
+   COLOR MATCH
+========================================================= */
+
+function launchColorMatch() {
+
+    const colors = [
+        "Red",
+        "Blue",
+        "Green",
+        "Yellow",
+        "Purple",
+        "Orange"
+    ];
+
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Points</span>
+            <strong class="score-value">
+                0
+            </strong>
+        </div>
+
+        <h2 id="colorTarget">
+            Color
+        </h2>
+
+        <div
+            class="choice-row"
+            id="colorChoices"
+        ></div>
+
+        <p id="colorMessage">
+            Choose the matching color.
+        </p>
+    `;
+
+
+    const target =
+        document.getElementById(
+            "colorTarget"
+        );
+
+
+    const choices =
+        document.getElementById(
+            "colorChoices"
+        );
+
+
+    const message =
+        document.getElementById(
+            "colorMessage"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    let score = 0;
+    let currentColor = "";
+
+
+    function nextRound() {
+
+        currentColor =
+            colors[
+                Math.floor(
+                    Math.random() *
+                    colors.length
+                )
+            ];
+
+
+        target.textContent =
+            currentColor;
+
+
+        const shuffled =
+            [...colors]
+                .sort(
+                    () =>
+                        Math.random() - 0.5
+                )
+                .slice(0, 4);
+
+
+        if (
+            !shuffled.includes(
+                currentColor
+            )
+        ) {
+
+            shuffled[
+                Math.floor(
+                    Math.random() *
+                    shuffled.length
+                )
+            ] = currentColor;
+
+        }
+
+
+        choices.innerHTML =
+            shuffled
+                .map(
+                    color => `
+                        <button
+                            class="choice-button"
+                            type="button"
+                            data-color="${color}"
+                        >
+                            ${color}
+                        </button>
+                    `
+                )
+                .join("");
+
+
+        choices
+            .querySelectorAll(
+                "[data-color]"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        if (
+                            button.dataset.color ===
+                            currentColor
+                        ) {
+
+                            score++;
+
+                            message.textContent =
+                                "Correct!";
+
+                            setHighScore(
+                                "colormatch",
+                                score
+                            );
+
+                        } else {
+
+                            message.textContent =
+                                "Wrong!";
+
+                        }
+
+
+                        scoreElement.textContent =
+                            score;
+
+
+                        nextRound();
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    nextRound();
+
+    return () => {};
+
+}
+
+
+/* =========================================================
+   WHACK A MOLE
+========================================================= */
+
+function launchWhack() {
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Hits</span>
+            <strong class="score-value">
+                0
+            </strong>
+        </div>
+
+        <div
+            class="memory-grid"
+            id="moleGrid"
+        ></div>
+
+        <p id="moleTimer">
+            10 seconds
+        </p>
+    `;
+
+
+    const grid =
+        document.getElementById(
+            "moleGrid"
+        );
+
+
+    const timerText =
+        document.getElementById(
+            "moleTimer"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    let score = 0;
+    let seconds = 10;
+    let moleIndex = -1;
+
+
+    let moveTimer = null;
+    let countdownTimer = null;
+
+
+    grid.innerHTML =
+        Array.from(
+            { length: 9 },
+            (_, index) => `
+                <button
+                    class="memory-card"
+                    data-mole="${index}"
+                    type="button"
+                >
+                    🕳️
+                </button>
+            `
+        )
+        .join("");
+
+
+    const cells =
+        [...grid.children];
+
+
+    function moveMole() {
+
+        cells.forEach(
+            cell =>
+                cell.textContent = "🕳️"
+        );
+
+
+        moleIndex =
+            Math.floor(
+                Math.random() *
+                cells.length
+            );
+
+
+        cells[moleIndex].textContent =
+            "🐹";
+
+    }
+
+
+    cells.forEach(
+        cell => {
+
+            cell.addEventListener(
+                "click",
+                () => {
+
+                    if (
+                        Number(
+                            cell.dataset.mole
+                        ) === moleIndex
+                    ) {
+
+                        score++;
+
+                        scoreElement.textContent =
+                            score;
+
+                        setHighScore(
+                            "whack",
+                            score
+                        );
+
+                        moveMole();
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    moveMole();
+
+
+    moveTimer =
+        setInterval(
+            moveMole,
+            650
+        );
+
+
+    countdownTimer =
+        setInterval(() => {
+
+            seconds--;
+
+            timerText.textContent =
+                `${seconds} seconds`;
+
+
+            if (seconds <= 0) {
+
+                clearInterval(
+                    moveTimer
+                );
+
+                clearInterval(
+                    countdownTimer
+                );
+
+
+                showMessage(
+                    "Time Up!",
+                    `Hits: ${score}`,
+                    "🔨"
+                );
+
+            }
+
+        }, 1000);
+
+
+    return () => {
+
+        clearInterval(
+            moveTimer
+        );
+
+        clearInterval(
+            countdownTimer
+        );
+
+    };
+
+}
+
+
+/* =========================================================
+   SLIDING PUZZLE
+========================================================= */
+
+function launchSliding() {
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Sliding Puzzle</span>
+            <strong class="score-value">
+                4 × 4
+            </strong>
+        </div>
+
+        <div
+            class="game-2048"
+            id="slidingGrid"
+        ></div>
+
+        <p>
+            Move the tiles into order.
+        </p>
+    `;
+
+
+    const grid =
+        document.getElementById(
+            "slidingGrid"
+        );
+
+
+    let board = [
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 0
+    ];
+
+
+    function shuffle() {
+
+        for (
+            let i = board.length - 1;
+            i > 0;
+            i--
+        ) {
+
+            const j =
+                Math.floor(
+                    Math.random() *
+                    (i + 1)
+                );
+
+
+            [
+                board[i],
+                board[j]
+            ] = [
+                board[j],
+                board[i]
+            ];
+
+        }
+
+
+        if (
+            board.every(
+                (value, index) =>
+                    value ===
+                    (index + 1) % 16
+            )
+        ) {
+
+            shuffle();
+
+        }
+
+    }
+
+
+    function render() {
+
+        grid.innerHTML =
+            board
+                .map(
+                    (value, index) => `
+                        <button
+                            class="tile-2048"
+                            data-index="${index}"
+                            type="button"
+                        >
+                            ${value || ""}
+                        </button>
+                    `
+                )
+                .join("");
+
+
+        grid
+            .querySelectorAll("button")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        move(
+                            Number(
+                                button.dataset.index
+                            )
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    function move(index) {
+
+        const empty =
+            board.indexOf(0);
+
+
+        const row =
+            Math.floor(index / 4);
+
+
+        const col =
+            index % 4;
+
+
+        const emptyRow =
+            Math.floor(empty / 4);
+
+
+        const emptyCol =
+            empty % 4;
+
+
+        const adjacent =
+            Math.abs(row - emptyRow) +
+            Math.abs(col - emptyCol);
+
+
+        if (adjacent !== 1) {
             return;
         }
 
-        const wins =
-            (choice === "rock" && computer === "scissors") ||
-            (choice === "paper" && computer === "rock") ||
-            (choice === "scissors" && computer === "paper");
 
-        if (wins) {
-            playerScore++;
+        [
+            board[index],
+            board[empty]
+        ] = [
+            board[empty],
+            board[index]
+        ];
 
-            resultElement.textContent =
-                `You win! Computer chose ${computer}.`;
-        } else {
-            computerScore++;
 
-            resultElement.textContent =
-                `Computer wins! It chose ${computer}.`;
-        }
+        render();
 
-        playerElement.textContent = playerScore;
-        computerElement.textContent = computerScore;
 
-        if (playerScore >= 5 || computerScore >= 5) {
-            saveHighScore(
-                "rps",
-                playerScore * 100
+        const solved =
+            board.every(
+                (value, i) =>
+                    value ===
+                    (i + 1) % 16
             );
+
+
+        if (solved) {
+
+            setHighScore(
+                "sliding",
+                1
+            );
+
+
+            showMessage(
+                "Solved!",
+                "Puzzle completed.",
+                "🧩"
+            );
+
         }
+
     }
 
-    buttons.forEach(button => {
-        button.addEventListener(
-            "click",
-            () => play(button.dataset.choice)
-        );
-    });
+
+    shuffle();
+    render();
 
     return () => {};
+
 }
+
 
 /* =========================================================
    SIMON SAYS
-   ========================================================= */
+========================================================= */
 
-function startSimon() {
-    setGameContent(`
+function launchSimon() {
+
+    gameContainer.innerHTML = `
         <div class="game-info-bar">
-            <span>Level: <b id="simonLevel">0</b></span>
-            <span id="simonStatus">Press Start</span>
+            <span>Level</span>
+            <strong class="score-value">
+                0
+            </strong>
         </div>
 
-        <button id="simonStart" class="game-button">
-            Start Game
+        <div
+            class="simon-grid"
+            id="simonGrid"
+        >
+
+            <button
+                class="simon-button simon-red"
+                data-color="0"
+                type="button"
+            ></button>
+
+            <button
+                class="simon-button simon-blue"
+                data-color="1"
+                type="button"
+            ></button>
+
+            <button
+                class="simon-button simon-green"
+                data-color="2"
+                type="button"
+            ></button>
+
+            <button
+                class="simon-button simon-yellow"
+                data-color="3"
+                type="button"
+            ></button>
+
+        </div>
+
+        <p id="simonMessage">
+            Press Start.
+        </p>
+
+        <button
+            class="game-button"
+            id="simonStart"
+            type="button"
+        >
+            Start
         </button>
+    `;
 
-        <div class="simon-grid">
-            <button class="simon-button simon-red" data-index="0"></button>
-            <button class="simon-button simon-blue" data-index="1"></button>
-            <button class="simon-button simon-green" data-index="2"></button>
-            <button class="simon-button simon-yellow" data-index="3"></button>
-        </div>
-    `);
 
     const buttons =
-        document.querySelectorAll(".simon-button");
+        [
+            ...document.querySelectorAll(
+                "#simonGrid .simon-button"
+            )
+        ];
+
+
+    const message =
+        document.getElementById(
+            "simonMessage"
+        );
+
 
     const startButton =
-        document.getElementById("simonStart");
+        document.getElementById(
+            "simonStart"
+        );
 
-    const levelElement =
-        document.getElementById("simonLevel");
 
-    const statusElement =
-        document.getElementById("simonStatus");
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
 
     let sequence = [];
-    let userIndex = 0;
+    let playerIndex = 0;
     let playing = false;
-    let timers = [];
 
-    function wait(ms) {
-        return new Promise(resolve => {
-            const timer = setTimeout(resolve, ms);
-            timers.push(timer);
-        });
+
+    function sleep(ms) {
+
+        return new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    ms
+                )
+        );
+
     }
+
 
     async function flash(index) {
-        const button = buttons[index];
 
-        button.classList.add("active");
+        buttons[index].classList.add(
+            "active"
+        );
 
-        await wait(400);
 
-        button.classList.remove("active");
+        await sleep(400);
 
-        await wait(150);
+
+        buttons[index].classList.remove(
+            "active"
+        );
+
+
+        await sleep(150);
+
     }
+
 
     async function playSequence() {
-        playing = true;
-        statusElement.textContent = "Watch...";
 
-        for (const index of sequence) {
+        playing = true;
+
+        playerIndex = 0;
+
+        message.textContent =
+            "Watch the sequence…";
+
+
+        for (
+            const index of sequence
+        ) {
+
             await flash(index);
+
         }
 
-        userIndex = 0;
+
         playing = false;
 
-        statusElement.textContent = "Your turn!";
+        message.textContent =
+            "Your turn!";
+
     }
 
-    function nextLevel() {
-        sequence.push(randomInt(0, 3));
 
-        levelElement.textContent =
-            sequence.length;
+    async function startGame() {
 
-        playSequence();
-    }
-
-    function startGame() {
         sequence = [];
-        userIndex = 0;
 
-        startButton.disabled = true;
+        scoreElement.textContent =
+            "0";
 
-        nextLevel();
+
+        startButton.disabled =
+            true;
+
+
+        addStep();
+
+        await playSequence();
+
     }
 
-    function clickHandler(event) {
-        if (playing || !sequence.length) {
-            return;
-        }
 
-        const index =
-            Number(event.currentTarget.dataset.index);
+    function addStep() {
 
-        if (index !== sequence[userIndex]) {
-            playing = true;
+        sequence.push(
+            Math.floor(
+                Math.random() * 4
+            )
+        );
 
-            const level = sequence.length - 1;
+    }
 
-            saveHighScore("simon", level);
 
-            showMessage(
-                "🎵",
-                "Game Over",
-                `You reached level ${level}.`,
-                "Play Again",
-                () => restartCurrentGame()
+    buttons.forEach(
+        (button, index) => {
+
+            button.addEventListener(
+                "click",
+                async () => {
+
+                    if (playing) {
+                        return;
+                    }
+
+
+                    if (
+                        Number(
+                            button.dataset.color
+                        ) !==
+                        sequence[playerIndex]
+                    ) {
+
+                        message.textContent =
+                            "Wrong! Game over.";
+
+                        startButton.disabled =
+                            false;
+
+                        setHighScore(
+                            "simon",
+                            sequence.length - 1
+                        );
+
+                        return;
+
+                    }
+
+
+                    await flash(index);
+
+                    playerIndex++;
+
+
+                    if (
+                        playerIndex ===
+                        sequence.length
+                    ) {
+
+                        const level =
+                            sequence.length;
+
+
+                        scoreElement.textContent =
+                            level;
+
+
+                        setHighScore(
+                            "simon",
+                            level
+                        );
+
+
+                        addStep();
+
+                        await sleep(300);
+
+                        await playSequence();
+
+                    }
+
+                }
             );
 
-            return;
         }
+    );
 
-        flash(index);
-
-        userIndex++;
-
-        if (userIndex >= sequence.length) {
-            playing = true;
-
-            statusElement.textContent =
-                "Correct!";
-
-            setTimeout(() => {
-                if (!currentGame) {
-                    return;
-                }
-
-                nextLevel();
-            }, 600);
-        }
-    }
 
     startButton.addEventListener(
         "click",
         startGame
     );
 
-    buttons.forEach(button => {
-        button.addEventListener(
-            "click",
-            clickHandler
-        );
-    });
-
-    return () => {
-        timers.forEach(timer => clearTimeout(timer));
-    };
-}
-
-/* =========================================================
-   WHACK-A-MOLE
-   ========================================================= */
-
-function startWhack() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Score: <b id="whackScore">0</b></span>
-            <span>Time: <b id="whackTime">30</b>s</span>
-        </div>
-
-        <div id="whackGrid"></div>
-    `);
-
-    const grid = document.getElementById("whackGrid");
-    const scoreElement =
-        document.getElementById("whackScore");
-    const timeElement =
-        document.getElementById("whackTime");
-
-    grid.style.display = "grid";
-    grid.style.gridTemplateColumns =
-        "repeat(3, minmax(70px, 100px))";
-    grid.style.gap = "10px";
-    grid.style.marginTop = "15px";
-
-    let score = 0;
-    let time = 30;
-    let mole = -1;
-
-    let interval = null;
-    let timer = null;
-
-    const cells = [];
-
-    for (let i = 0; i < 9; i++) {
-        const button = document.createElement("button");
-
-        button.style.width = "90px";
-        button.style.height = "90px";
-        button.style.border = "0";
-        button.style.borderRadius = "15px";
-        button.style.background =
-            "var(--surface-2)";
-        button.style.fontSize = "35px";
-
-        button.addEventListener("click", () => {
-            if (i === mole) {
-                score++;
-                scoreElement.textContent = score;
-
-                mole = -1;
-                render();
-            }
-        });
-
-        cells.push(button);
-        grid.appendChild(button);
-    }
-
-    function render() {
-        cells.forEach((cell, index) => {
-            cell.textContent =
-                index === mole ? "🐹" : "";
-        });
-    }
-
-    function moveMole() {
-        mole = randomInt(0, 8);
-        render();
-    }
-
-    moveMole();
-
-    interval = setInterval(moveMole, 700);
-
-    timer = setInterval(() => {
-        time--;
-        timeElement.textContent = time;
-
-        if (time <= 0) {
-            clearInterval(interval);
-            clearInterval(timer);
-
-            saveHighScore("whack", score);
-
-            showMessage(
-                "🐹",
-                "Time Up!",
-                `You scored ${score}.`,
-                "Play Again",
-                () => restartCurrentGame()
-            );
-        }
-    }, 1000);
-
-    return () => {
-        clearInterval(interval);
-        clearInterval(timer);
-    };
-}
-
-/* =========================================================
-   SLIDING PUZZLE
-   ========================================================= */
-
-function startSlidingPuzzle() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Moves: <b id="slideMoves">0</b></span>
-            <span>Goal: 1–8</span>
-        </div>
-
-        <div id="slideGrid"></div>
-
-        <button id="slideShuffle"
-                class="game-button"
-                style="margin-top:18px;">
-            Shuffle
-        </button>
-    `);
-
-    const grid = document.getElementById("slideGrid");
-    const movesElement =
-        document.getElementById("slideMoves");
-    const shuffleButton =
-        document.getElementById("slideShuffle");
-
-    grid.style.display = "grid";
-    grid.style.gridTemplateColumns =
-        "repeat(3, 85px)";
-    grid.style.gap = "7px";
-
-    let board = [];
-    let moves = 0;
-
-    function shuffleBoard() {
-        board = [
-            1, 2, 3,
-            4, 5, 6,
-            7, 8, 0
-        ];
-
-        for (let i = 0; i < 150; i++) {
-            const empty =
-                board.indexOf(0);
-
-            const neighbors =
-                getSlideNeighbors(empty);
-
-            const random =
-                neighbors[
-                    randomInt(0, neighbors.length - 1)
-                ];
-
-            [board[empty], board[random]] =
-                [board[random], board[empty]];
-        }
-
-        moves = 0;
-        movesElement.textContent = moves;
-
-        render();
-    }
-
-    function getSlideNeighbors(index) {
-        const row = Math.floor(index / 3);
-        const col = index % 3;
-
-        const result = [];
-
-        if (row > 0) {
-            result.push(index - 3);
-        }
-
-        if (row < 2) {
-            result.push(index + 3);
-        }
-
-        if (col > 0) {
-            result.push(index - 1);
-        }
-
-        if (col < 2) {
-            result.push(index + 1);
-        }
-
-        return result;
-    }
-
-    function render() {
-        grid.innerHTML = "";
-
-        board.forEach((value, index) => {
-            const button = document.createElement("button");
-
-            button.textContent = value || "";
-
-            button.style.width = "85px";
-            button.style.height = "85px";
-            button.style.border = "0";
-            button.style.borderRadius = "13px";
-            button.style.background =
-                value
-                    ? "var(--surface-2)"
-                    : "transparent";
-            button.style.color =
-                "var(--text)";
-            button.style.fontSize = "25px";
-            button.style.fontWeight = "900";
-
-            button.addEventListener(
-                "click",
-                () => move(index)
-            );
-
-            grid.appendChild(button);
-        });
-    }
-
-    function move(index) {
-        const empty =
-            board.indexOf(0);
-
-        if (
-            !getSlideNeighbors(empty)
-                .includes(index)
-        ) {
-            return;
-        }
-
-        [board[index], board[empty]] =
-            [board[empty], board[index]];
-
-        moves++;
-        movesElement.textContent = moves;
-
-        render();
-
-        if (
-            board.join(",") ===
-            "1,2,3,4,5,6,7,8,0"
-        ) {
-            const score =
-                Math.max(
-                    1,
-                    1000 - moves * 5
-                );
-
-            saveHighScore(
-                "sliding",
-                score
-            );
-
-            showMessage(
-                "🧩",
-                "Puzzle Solved!",
-                `Solved in ${moves} moves.`,
-                "Play Again",
-                () => restartCurrentGame()
-            );
-        }
-    }
-
-    shuffleButton.addEventListener(
-        "click",
-        shuffleBoard
-    );
-
-    shuffleBoard();
 
     return () => {};
+
 }
 
-/* =========================================================
-   COLOR MATCH
-   ========================================================= */
-
-function startColorMatch() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Score: <b id="colorScore">0</b></span>
-            <span>Time: <b id="colorTime">30</b>s</span>
-        </div>
-
-        <h2 id="colorTarget">
-            Find the color
-        </h2>
-
-        <div id="colorChoices"
-             class="choice-row"></div>
-    `);
-
-    const scoreElement =
-        document.getElementById("colorScore");
-
-    const timeElement =
-        document.getElementById("colorTime");
-
-    const targetElement =
-        document.getElementById("colorTarget");
-
-    const choicesElement =
-        document.getElementById("colorChoices");
-
-    const colors = [
-        {
-            name: "Red",
-            value: "#e05252"
-        },
-        {
-            name: "Blue",
-            value: "#4d8fe8"
-        },
-        {
-            name: "Green",
-            value: "#45ad76"
-        },
-        {
-            name: "Yellow",
-            value: "#e6b84c"
-        },
-        {
-            name: "Purple",
-            value: "#8c5cf5"
-        },
-        {
-            name: "Orange",
-            value: "#e88b42"
-        }
-    ];
-
-    let score = 0;
-    let time = 30;
-    let target = null;
-
-    let timer = null;
-
-    function nextRound() {
-        target =
-            colors[
-                randomInt(0, colors.length - 1)
-            ];
-
-        targetElement.textContent =
-            `Find: ${target.name}`;
-
-        choicesElement.innerHTML = "";
-
-        const options = shuffle(colors).slice(0, 4);
-
-        if (!options.includes(target)) {
-            options[0] = target;
-        }
-
-        shuffle(options).forEach(color => {
-            const button =
-                document.createElement("button");
-
-            button.className =
-                "choice-button";
-
-            button.style.background =
-                color.value;
-
-            button.textContent = "";
-
-            button.addEventListener(
-                "click",
-                () => {
-                    if (color.name === target.name) {
-                        score++;
-                        scoreElement.textContent =
-                            score;
-                    } else {
-                        score = Math.max(
-                            0,
-                            score - 1
-                        );
-
-                        scoreElement.textContent =
-                            score;
-                    }
-
-                    nextRound();
-                }
-            );
-
-            choicesElement.appendChild(button);
-        });
-    }
-
-    nextRound();
-
-    timer = setInterval(() => {
-        time--;
-
-        timeElement.textContent = time;
-
-        if (time <= 0) {
-            clearInterval(timer);
-
-            saveHighScore(
-                "colormatch",
-                score
-            );
-
-            showMessage(
-                "🎨",
-                "Time Up!",
-                `Your score was ${score}.`,
-                "Play Again",
-                () => restartCurrentGame()
-            );
-        }
-    }, 1000);
-
-    return () => {
-        clearInterval(timer);
-    };
-}
 
 /* =========================================================
-   MATH SPRINT
-   ========================================================= */
+   CANVAS GAMES
+========================================================= */
 
-function startMathSprint() {
-    setGameContent(`
+function launchCanvasGame(type) {
+
+    gameContainer.innerHTML = `
         <div class="game-info-bar">
-            <span>Score: <b id="mathScore">0</b></span>
-            <span>Time: <b id="mathTime">60</b>s</span>
-        </div>
-
-        <h2 id="mathQuestion"></h2>
-
-        <input
-            id="mathInput"
-            class="game-input"
-            type="number"
-            placeholder="Answer"
-            style="margin-top:18px;"
-        >
-
-        <button
-            id="mathSubmit"
-            class="game-button"
-            style="margin-top:12px;"
-        >
-            Submit
-        </button>
-
-        <p id="mathFeedback"
-           style="margin-top:12px;">
-        </p>
-    `);
-
-    const scoreElement =
-        document.getElementById("mathScore");
-
-    const timeElement =
-        document.getElementById("mathTime");
-
-    const questionElement =
-        document.getElementById("mathQuestion");
-
-    const input =
-        document.getElementById("mathInput");
-
-    const submit =
-        document.getElementById("mathSubmit");
-
-    const feedback =
-        document.getElementById("mathFeedback");
-
-    let score = 0;
-    let time = 60;
-    let answer = 0;
-    let timer = null;
-
-    function nextQuestion() {
-        const a = randomInt(1, 20);
-        const b = randomInt(1, 20);
-
-        const type = randomInt(1, 3);
-
-        if (type === 1) {
-            answer = a + b;
-            questionElement.textContent =
-                `${a} + ${b} = ?`;
-        }
-
-        if (type === 2) {
-            const high = Math.max(a, b);
-            const low = Math.min(a, b);
-
-            answer = high - low;
-
-            questionElement.textContent =
-                `${high} − ${low} = ?`;
-        }
-
-        if (type === 3) {
-            const x = randomInt(2, 10);
-            const y = randomInt(2, 10);
-
-            answer = x * y;
-
-            questionElement.textContent =
-                `${x} × ${y} = ?`;
-        }
-
-        input.value = "";
-        input.focus();
-    }
-
-    function submitAnswer() {
-        const value = Number(input.value);
-
-        if (value === answer) {
-            score++;
-            feedback.textContent = "Correct! ✅";
-        } else {
-            feedback.textContent =
-                `Wrong. Answer: ${answer}`;
-        }
-
-        scoreElement.textContent = score;
-
-        nextQuestion();
-    }
-
-    submit.addEventListener(
-        "click",
-        submitAnswer
-    );
-
-    input.addEventListener(
-        "keydown",
-        event => {
-            if (event.key === "Enter") {
-                submitAnswer();
-            }
-        }
-    );
-
-    nextQuestion();
-
-    timer = setInterval(() => {
-        time--;
-
-        timeElement.textContent = time;
-
-        if (time <= 0) {
-            clearInterval(timer);
-
-            saveHighScore(
-                "math",
-                score
-            );
-
-            showMessage(
-                "➗",
-                "Time Up!",
-                `You solved ${score} questions.`,
-                "Play Again",
-                () => restartCurrentGame()
-            );
-        }
-    }, 1000);
-
-    return () => {
-        clearInterval(timer);
-    };
-}
-
-/* =========================================================
-   TAP COUNTER
-   ========================================================= */
-
-function startTapCounter() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Taps: <b id="tapScore">0</b></span>
-            <span>Time: <b id="tapTime">10</b>s</span>
-        </div>
-
-        <button
-            id="tapButton"
-            style="
-                width:min(80vw,300px);
-                height:220px;
-                border:0;
-                border-radius:25px;
-                background:var(--primary);
-                color:white;
-                font-size:35px;
-                font-weight:900;
-                margin-top:15px;
-            "
-        >
-            TAP!
-        </button>
-    `);
-
-    const tapButton =
-        document.getElementById("tapButton");
-
-    const scoreElement =
-        document.getElementById("tapScore");
-
-    const timeElement =
-        document.getElementById("tapTime");
-
-    let score = 0;
-    let time = 10;
-    let timer = null;
-    let stopped = false;
-
-    tapButton.addEventListener("click", () => {
-        if (stopped) {
-            return;
-        }
-
-        score++;
-        scoreElement.textContent = score;
-    });
-
-    timer = setInterval(() => {
-        time--;
-
-        timeElement.textContent = time;
-
-        if (time <= 0) {
-            stopped = true;
-            clearInterval(timer);
-
-            saveHighScore(
-                "tap",
-                score
-            );
-
-            tapButton.disabled = true;
-            tapButton.textContent = "TIME UP";
-
-            showMessage(
-                "👆",
-                "Time Up!",
-                `You made ${score} taps.`,
-                "Play Again",
-                () => restartCurrentGame()
-            );
-        }
-    }, 1000);
-
-    return () => {
-        clearInterval(timer);
-    };
-}
-
-/* =========================================================
-   WORD GUESS
-   ========================================================= */
-
-function startWordGuess() {
-    const wordList = [
-        "APPLE",
-        "GAMES",
-        "PHONE",
-        "MUSIC",
-        "HOUSE",
-        "WATER",
-        "CLOUD",
-        "TIGER",
-        "ROBOT",
-        "SPACE",
-        "LIGHT",
-        "RIVER"
-    ];
-
-    const word =
-        wordList[
-            randomInt(0, wordList.length - 1)
-        ];
-
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Wrong: <b id="wordWrong">0</b>/6</span>
-            <span>Best: ${getHighScore("word")}</span>
-        </div>
-
-        <h2 id="wordDisplay"
-            style="letter-spacing:8px;">
-        </h2>
-
-        <div id="letterButtons"
-             class="choice-row"
-             style="max-width:600px;">
-        </div>
-    `);
-
-    const display =
-        document.getElementById("wordDisplay");
-
-    const wrongElement =
-        document.getElementById("wordWrong");
-
-    const letterArea =
-        document.getElementById("letterButtons");
-
-    let guessed = [];
-    let wrong = 0;
-    let finished = false;
-
-    function renderWord() {
-        display.textContent =
-            word
-                .split("")
-                .map(letter =>
-                    guessed.includes(letter)
-                        ? letter
-                        : "_"
-                )
-                .join(" ");
-    }
-
-    function finish(win) {
-        finished = true;
-
-        if (win) {
-            saveHighScore(
-                "word",
-                Math.max(
-                    1,
-                    100 - wrong * 10
-                )
-            );
-        }
-
-        showMessage(
-            win ? "🎉" : "🔤",
-            win ? "Correct!" : "Game Over",
-            win
-                ? `You guessed ${word}.`
-                : `The word was ${word}.`,
-            "Play Again",
-            () => restartCurrentGame()
-        );
-    }
-
-    for (let code = 65; code <= 90; code++) {
-        const letter =
-            String.fromCharCode(code);
-
-        const button =
-            document.createElement("button");
-
-        button.className =
-            "game-button";
-
-        button.textContent = letter;
-
-        button.style.minWidth = "42px";
-
-        button.addEventListener(
-            "click",
-            () => {
-                if (
-                    finished ||
-                    guessed.includes(letter)
-                ) {
-                    return;
-                }
-
-                guessed.push(letter);
-
-                button.disabled = true;
-                button.style.opacity = "0.5";
-
-                if (!word.includes(letter)) {
-                    wrong++;
-
-                    wrongElement.textContent =
-                        wrong;
-
-                    if (wrong >= 6) {
-                        finish(false);
-                        return;
-                    }
-                }
-
-                renderWord();
-
-                const complete =
-                    word
-                        .split("")
-                        .every(
-                            letter =>
-                                guessed.includes(letter)
-                        );
-
-                if (complete) {
-                    finish(true);
-                }
-            }
-        );
-
-        letterArea.appendChild(button);
-    }
-
-    renderWord();
-
-    return () => {};
-}
-
-/* =========================================================
-   DODGE BLOCKS
-   ========================================================= */
-
-function startDodgeBlocks() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Score: <b id="dodgeScore">0</b></span>
-            <span>Best: ${getHighScore("dodge")}</span>
+            <span>Score</span>
+            <strong class="score-value">
+                0
+            </strong>
         </div>
 
         <canvas
-            id="dodgeCanvas"
             class="game-canvas"
-            width="400"
-            height="500"
-        ></canvas>
-
-        <p style="margin-top:12px;">
-            Move with Arrow Keys or A/D.
-        </p>
-    `);
-
-    const canvas =
-        document.getElementById("dodgeCanvas");
-
-    const ctx =
-        canvas.getContext("2d");
-
-    const scoreElement =
-        document.getElementById("dodgeScore");
-
-    const player = {
-        x: 180,
-        y: 450,
-        width: 40,
-        height: 25,
-        speed: 7
-    };
-
-    let blocks = [];
-    let score = 0;
-    let keys = {};
-    let animation = null;
-    let spawnTimer = 0;
-    let stopped = false;
-
-    function draw() {
-        ctx.fillStyle = "#111827";
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-        ctx.fillStyle = "#7c7df7";
-
-        ctx.fillRect(
-            player.x,
-            player.y,
-            player.width,
-            player.height
-        );
-
-        blocks.forEach(block => {
-            ctx.fillStyle = "#e05252";
-
-            ctx.fillRect(
-                block.x,
-                block.y,
-                block.width,
-                block.height
-            );
-        });
-    }
-
-    function collision(a, b) {
-        return (
-            a.x < b.x + b.width &&
-            a.x + a.width > b.x &&
-            a.y < b.y + b.height &&
-            a.y + a.height > b.y
-        );
-    }
-
-    function endGame() {
-        stopped = true;
-
-        if (animation) {
-            cancelAnimationFrame(animation);
-        }
-
-        saveHighScore(
-            "dodge",
-            score
-        );
-
-        showMessage(
-            "🚀",
-            "Game Over",
-            `You survived with ${score} points.`,
-            "Play Again",
-            () => restartCurrentGame()
-        );
-    }
-
-    function update() {
-        if (stopped) {
-            return;
-        }
-
-        if (keys.ArrowLeft || keys.a) {
-            player.x -= player.speed;
-        }
-
-        if (keys.ArrowRight || keys.d) {
-            player.x += player.speed;
-        }
-
-        player.x = Math.max(
-            0,
-            Math.min(
-                canvas.width - player.width,
-                player.x
-            )
-        );
-
-        spawnTimer++;
-
-        if (spawnTimer >= 28) {
-            spawnTimer = 0;
-
-            blocks.push({
-                x: randomInt(
-                    0,
-                    canvas.width - 35
-                ),
-                y: -30,
-                width: randomInt(25, 45),
-                height: 25,
-                speed: randomInt(3, 6)
-            });
-        }
-
-        blocks.forEach(block => {
-            block.y += block.speed;
-
-            if (collision(player, block)) {
-                endGame();
-            }
-        });
-
-        blocks =
-            blocks.filter(
-                block =>
-                    block.y < canvas.height + 40
-            );
-
-        score++;
-        scoreElement.textContent =
-            Math.floor(score / 10);
-
-        draw();
-
-        animation =
-            requestAnimationFrame(update);
-    }
-
-    function keyDown(event) {
-        keys[event.key] = true;
-    }
-
-    function keyUp(event) {
-        keys[event.key] = false;
-    }
-
-    window.addEventListener("keydown", keyDown);
-    window.addEventListener("keyup", keyUp);
-
-    animation =
-        requestAnimationFrame(update);
-
-    return () => {
-        stopped = true;
-
-        if (animation) {
-            cancelAnimationFrame(animation);
-        }
-
-        window.removeEventListener(
-            "keydown",
-            keyDown
-        );
-
-        window.removeEventListener(
-            "keyup",
-            keyUp
-        );
-    };
-}
-
-/* =========================================================
-   COIN CATCHER
-   ========================================================= */
-
-function startCoinCatcher() {
-    setGameContent(`
-        <div class="game-info-bar">
-            <span>Score: <b id="coinScore">0</b></span>
-            <span>Lives: <b id="coinLives">3</b></span>
-        </div>
-
-        <canvas
-            id="coinCanvas"
-            class="game-canvas"
+            id="gameCanvas"
             width="420"
-            height="500"
+            height="300"
         ></canvas>
 
-        <p style="margin-top:12px;">
-            Move with Arrow Keys, A/D, or mouse.
+        <p>
+            Use keyboard controls.
         </p>
-    `);
+    `;
+
 
     const canvas =
-        document.getElementById("coinCanvas");
+        document.getElementById(
+            "gameCanvas"
+        );
+
 
     const ctx =
         canvas.getContext("2d");
 
+
     const scoreElement =
-        document.getElementById("coinScore");
+        gameContainer.querySelector(
+            ".score-value"
+        );
 
-    const livesElement =
-        document.getElementById("coinLives");
 
-    const basket = {
-        x: 175,
-        y: 450,
-        width: 70,
-        height: 25,
-        speed: 7
-    };
-
-    let objects = [];
     let score = 0;
-    let lives = 3;
-    let keys = {};
-    let animation = null;
-    let spawnTimer = 0;
-    let stopped = false;
+    let animationId = null;
 
-    function draw() {
-        ctx.fillStyle = "#111827";
 
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
+    const keys = {};
 
-        ctx.fillStyle = "#7c7df7";
-
-        ctx.fillRect(
-            basket.x,
-            basket.y,
-            basket.width,
-            basket.height
-        );
-
-        objects.forEach(object => {
-            ctx.font = "28px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-
-            ctx.fillText(
-                object.type === "coin"
-                    ? "🪙"
-                    : "💣",
-                object.x,
-                object.y
-            );
-        });
-    }
-
-    function collision(object) {
-        return (
-            object.x > basket.x &&
-            object.x < basket.x + basket.width &&
-            object.y > basket.y &&
-            object.y < basket.y + basket.height
-        );
-    }
-
-    function endGame() {
-        stopped = true;
-
-        if (animation) {
-            cancelAnimationFrame(animation);
-        }
-
-        saveHighScore(
-            "coin",
-            score
-        );
-
-        showMessage(
-            "🪙",
-            "Game Over",
-            `You collected ${score} coins.`,
-            "Play Again",
-            () => restartCurrentGame()
-        );
-    }
-
-    function update() {
-        if (stopped) {
-            return;
-        }
-
-        if (keys.ArrowLeft || keys.a) {
-            basket.x -= basket.speed;
-        }
-
-        if (keys.ArrowRight || keys.d) {
-            basket.x += basket.speed;
-        }
-
-        basket.x = Math.max(
-            0,
-            Math.min(
-                canvas.width - basket.width,
-                basket.x
-            )
-        );
-
-        spawnTimer++;
-
-        if (spawnTimer >= 30) {
-            spawnTimer = 0;
-
-            objects.push({
-                x: randomInt(20, canvas.width - 20),
-                y: -20,
-                speed: randomInt(3, 6),
-                type:
-                    Math.random() < 0.8
-                        ? "coin"
-                        : "bomb"
-            });
-        }
-
-        objects.forEach(object => {
-            object.y += object.speed;
-
-            if (collision(object)) {
-                object.hit = true;
-
-                if (object.type === "coin") {
-                    score++;
-                    scoreElement.textContent =
-                        score;
-                } else {
-                    lives--;
-
-                    livesElement.textContent =
-                        lives;
-
-                    if (lives <= 0) {
-                        endGame();
-                    }
-                }
-            }
-        });
-
-        objects =
-            objects.filter(
-                object =>
-                    !object.hit &&
-                    object.y < canvas.height + 30
-            );
-
-        draw();
-
-        animation =
-            requestAnimationFrame(update);
-    }
 
     function keyDown(event) {
+
         keys[event.key] = true;
+
     }
+
 
     function keyUp(event) {
+
         keys[event.key] = false;
+
     }
 
-    function mouseMove(event) {
-        const rect =
-            canvas.getBoundingClientRect();
 
-        basket.x =
-            (event.clientX - rect.left) *
-                (canvas.width / rect.width) -
-            basket.width / 2;
-    }
-
-    window.addEventListener(
+    document.addEventListener(
         "keydown",
         keyDown
     );
 
-    window.addEventListener(
+
+    document.addEventListener(
         "keyup",
         keyUp
     );
 
-    canvas.addEventListener(
-        "mousemove",
-        mouseMove
-    );
 
-    animation =
-        requestAnimationFrame(update);
+    if (type === "pong") {
 
-    return () => {
-        stopped = true;
+        let paddleY = 120;
 
-        if (animation) {
-            cancelAnimationFrame(animation);
+        let ballX = 210;
+        let ballY = 150;
+
+        let ballVX = 4;
+        let ballVY = 3;
+
+
+        function drawPong() {
+
+            ctx.fillStyle =
+                "#10101a";
+
+            ctx.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            if (keys.ArrowUp) {
+
+                paddleY -= 5;
+
+            }
+
+
+            if (keys.ArrowDown) {
+
+                paddleY += 5;
+
+            }
+
+
+            paddleY =
+                Math.max(
+                    0,
+                    Math.min(
+                        220,
+                        paddleY
+                    )
+                );
+
+
+            ballX += ballVX;
+            ballY += ballVY;
+
+
+            if (
+                ballY <= 7 ||
+                ballY >= 293
+            ) {
+
+                ballVY *= -1;
+
+            }
+
+
+            if (
+                ballX <= 25 &&
+                ballY >= paddleY &&
+                ballY <= paddleY + 80
+            ) {
+
+                ballVX =
+                    Math.abs(ballVX);
+
+                score++;
+
+                scoreElement.textContent =
+                    score;
+
+                setHighScore(
+                    "pong",
+                    score
+                );
+
+            }
+
+
+            if (ballX > 420) {
+
+                ballX = 210;
+                ballY = 150;
+
+            }
+
+
+            if (ballX < 0) {
+
+                cancelAnimationFrame(
+                    animationId
+                );
+
+
+                showMessage(
+                    "Game Over",
+                    `Score: ${score}`,
+                    "🏓"
+                );
+
+
+                return;
+
+            }
+
+
+            ctx.fillStyle =
+                "#00f5ff";
+
+
+            ctx.fillRect(
+                15,
+                paddleY,
+                10,
+                80
+            );
+
+
+            ctx.fillStyle =
+                "#ff2bd6";
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                ballX,
+                ballY,
+                7,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            animationId =
+                requestAnimationFrame(
+                    drawPong
+                );
+
         }
 
-        window.removeEventListener(
+
+        drawPong();
+
+
+    } else if (type === "breakout") {
+
+        let paddleX = 160;
+
+        let ballX = 210;
+        let ballY = 260;
+
+        let ballVX = 3;
+        let ballVY = -3;
+
+
+        const bricks = [];
+
+
+        for (
+            let row = 0;
+            row < 4;
+            row++
+        ) {
+
+            for (
+                let col = 0;
+                col < 7;
+                col++
+            ) {
+
+                bricks.push({
+                    x: 20 + col * 56,
+                    y: 30 + row * 25,
+                    alive: true
+                });
+
+            }
+
+        }
+
+
+        function drawBreakout() {
+
+            ctx.fillStyle =
+                "#10101a";
+
+            ctx.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            if (keys.ArrowLeft) {
+
+                paddleX -= 6;
+
+            }
+
+
+            if (keys.ArrowRight) {
+
+                paddleX += 6;
+
+            }
+
+
+            paddleX =
+                Math.max(
+                    0,
+                    Math.min(
+                        320,
+                        paddleX
+                    )
+                );
+
+
+            ballX += ballVX;
+            ballY += ballVY;
+
+
+            if (
+                ballX <= 7 ||
+                ballX >= 413
+            ) {
+
+                ballVX *= -1;
+
+            }
+
+
+            if (ballY <= 7) {
+
+                ballVY *= -1;
+
+            }
+
+
+            if (
+                ballY >= 270 &&
+                ballY <= 290 &&
+                ballX >= paddleX &&
+                ballX <= paddleX + 100
+            ) {
+
+                ballVY =
+                    -Math.abs(ballVY);
+
+            }
+
+
+            for (
+                const brick of bricks
+            ) {
+
+                if (
+                    brick.alive &&
+                    ballX >= brick.x &&
+                    ballX <= brick.x + 48 &&
+                    ballY >= brick.y &&
+                    ballY <= brick.y + 18
+                ) {
+
+                    brick.alive = false;
+
+                    ballVY *= -1;
+
+                    score++;
+
+                    scoreElement.textContent =
+                        score;
+
+                    setHighScore(
+                        "breakout",
+                        score
+                    );
+
+                    break;
+
+                }
+
+            }
+
+
+            if (ballY > 300) {
+
+                cancelAnimationFrame(
+                    animationId
+                );
+
+
+                showMessage(
+                    "Game Over",
+                    `Score: ${score}`,
+                    "🧱"
+                );
+
+
+                return;
+
+            }
+
+
+            bricks.forEach(
+                brick => {
+
+                    if (!brick.alive) {
+                        return;
+                    }
+
+
+                    ctx.fillStyle =
+                        "#8b5cf6";
+
+
+                    ctx.fillRect(
+                        brick.x,
+                        brick.y,
+                        48,
+                        18
+                    );
+
+                }
+            );
+
+
+            ctx.fillStyle =
+                "#00f5ff";
+
+
+            ctx.fillRect(
+                paddleX,
+                280,
+                100,
+                10
+            );
+
+
+            ctx.fillStyle =
+                "#ff2bd6";
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                ballX,
+                ballY,
+                7,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            if (
+                bricks.every(
+                    brick =>
+                        !brick.alive
+                )
+            ) {
+
+                cancelAnimationFrame(
+                    animationId
+                );
+
+
+                showMessage(
+                    "You Won!",
+                    `Score: ${score}`,
+                    "🧱"
+                );
+
+
+                return;
+
+            }
+
+
+            animationId =
+                requestAnimationFrame(
+                    drawBreakout
+                );
+
+        }
+
+
+        drawBreakout();
+
+
+    } else {
+
+        let playerX = 190;
+
+        let playerY = 250;
+
+        let obstacles = [];
+
+        let lastSpawn = 0;
+
+
+        function drawDodge() {
+
+            ctx.fillStyle =
+                "#10101a";
+
+            ctx.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            if (
+                keys.ArrowLeft ||
+                keys.a
+            ) {
+
+                playerX -= 5;
+
+            }
+
+
+            if (
+                keys.ArrowRight ||
+                keys.d
+            ) {
+
+                playerX += 5;
+
+            }
+
+
+            playerX =
+                Math.max(
+                    0,
+                    Math.min(
+                        380,
+                        playerX
+                    )
+                );
+
+
+            if (
+                performance.now() -
+                lastSpawn >
+                700
+            ) {
+
+                obstacles.push({
+                    x: Math.floor(
+                        Math.random() *
+                        390
+                    ),
+                    y: -20,
+                    size: 20,
+                    speed:
+                        2 +
+                        Math.random() * 2
+                });
+
+
+                lastSpawn =
+                    performance.now();
+
+            }
+
+
+            obstacles.forEach(
+                obstacle => {
+
+                    obstacle.y +=
+                        obstacle.speed;
+
+                }
+            );
+
+
+            obstacles =
+                obstacles.filter(
+                    obstacle =>
+                        obstacle.y < 320
+                );
+
+
+            for (
+                const obstacle of obstacles
+            ) {
+
+                if (
+                    playerX <
+                        obstacle.x +
+                        obstacle.size &&
+                    playerX + 20 >
+                        obstacle.x &&
+                    playerY <
+                        obstacle.y +
+                        obstacle.size &&
+                    playerY + 20 >
+                        obstacle.y
+                ) {
+
+                    cancelAnimationFrame(
+                        animationId
+                    );
+
+
+                    showMessage(
+                        "Game Over",
+                        `Score: ${score}`,
+                        "🚀"
+                    );
+
+
+                    return;
+
+                }
+
+            }
+
+
+            score += 1;
+
+            scoreElement.textContent =
+                Math.floor(
+                    score / 10
+                );
+
+
+            ctx.fillStyle =
+                "#00f5ff";
+
+
+            ctx.fillRect(
+                playerX,
+                playerY,
+                20,
+                20
+            );
+
+
+            ctx.fillStyle =
+                "#ff2bd6";
+
+
+            obstacles.forEach(
+                obstacle => {
+
+                    ctx.fillRect(
+                        obstacle.x,
+                        obstacle.y,
+                        obstacle.size,
+                        obstacle.size
+                    );
+
+                }
+            );
+
+
+            animationId =
+                requestAnimationFrame(
+                    drawDodge
+                );
+
+        }
+
+
+        drawDodge();
+
+    }
+
+
+    return () => {
+
+        cancelAnimationFrame(
+            animationId
+        );
+
+
+        document.removeEventListener(
             "keydown",
             keyDown
         );
 
-        window.removeEventListener(
+
+        document.removeEventListener(
             "keyup",
             keyUp
         );
 
-        canvas.removeEventListener(
-            "mousemove",
-            mouseMove
-        );
     };
+
 }
+
 
 /* =========================================================
-   APP STARTUP
-   ========================================================= */
+   MINESWEEPER
+========================================================= */
+
+function launchMinesweeper() {
+
+    const size = 8;
+    const mineCount = 10;
+
+    const total =
+        size * size;
+
+
+    const mines =
+        new Set();
+
+
+    while (
+        mines.size <
+        mineCount
+    ) {
+
+        mines.add(
+            Math.floor(
+                Math.random() *
+                total
+            )
+        );
+
+    }
+
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Safe Cells</span>
+            <strong class="score-value">
+                0
+            </strong>
+        </div>
+
+        <div
+            class="mine-grid"
+            id="mineGrid"
+        ></div>
+
+        <p id="mineMessage">
+            Find all safe cells.
+        </p>
+    `;
+
+
+    const grid =
+        document.getElementById(
+            "mineGrid"
+        );
+
+
+    const message =
+        document.getElementById(
+            "mineMessage"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    let safeCells = 0;
+    let gameOver = false;
+
+
+    grid.innerHTML =
+        Array.from(
+            { length: total },
+            (_, index) => `
+                <button
+                    class="mine-cell"
+                    data-index="${index}"
+                    type="button"
+                >
+                    ?
+                </button>
+            `
+        )
+        .join("");
+
+
+    function countNearbyMines(index) {
+
+        const row =
+            Math.floor(index / size);
+
+        const col =
+            index % size;
+
+
+        let count = 0;
+
+
+        for (
+            let dr = -1;
+            dr <= 1;
+            dr++
+        ) {
+
+            for (
+                let dc = -1;
+                dc <= 1;
+                dc++
+            ) {
+
+                if (
+                    dr === 0 &&
+                    dc === 0
+                ) {
+                    continue;
+                }
+
+
+                const r =
+                    row + dr;
+
+                const c =
+                    col + dc;
+
+
+                if (
+                    r >= 0 &&
+                    r < size &&
+                    c >= 0 &&
+                    c < size
+                ) {
+
+                    const neighbor =
+                        r * size + c;
+
+
+                    if (
+                        mines.has(
+                            neighbor
+                        )
+                    ) {
+
+                        count++;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        return count;
+
+    }
+
+
+    grid
+        .querySelectorAll("button")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    if (gameOver) {
+                        return;
+                    }
+
+
+                    const index =
+                        Number(
+                            button.dataset.index
+                        );
+
+
+                    if (
+                        button.classList.contains(
+                            "revealed"
+                        )
+                    ) {
+                        return;
+                    }
+
+
+                    button.classList.add(
+                        "revealed"
+                    );
+
+
+                    if (
+                        mines.has(index)
+                    ) {
+
+                        button.textContent =
+                            "💣";
+
+                        button.classList.add(
+                            "mine"
+                        );
+
+
+                        gameOver = true;
+
+                        message.textContent =
+                            "Mine found! Restart to try again.";
+
+
+                        grid
+                            .querySelectorAll(
+                                "button"
+                            )
+                            .forEach(
+                                cell =>
+                                    cell.disabled = true
+                            );
+
+
+                        return;
+
+                    }
+
+
+                    const nearby =
+                        countNearbyMines(
+                            index
+                        );
+
+
+                    button.textContent =
+                        nearby || "✓";
+
+
+                    safeCells++;
+
+
+                    scoreElement.textContent =
+                        safeCells;
+
+
+                    if (
+                        safeCells ===
+                        total - mineCount
+                    ) {
+
+                        gameOver = true;
+
+
+                        setHighScore(
+                            "minesweeper",
+                            safeCells
+                        );
+
+
+                        showMessage(
+                            "You Won!",
+                            "All safe cells found.",
+                            "💣"
+                        );
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    return () => {};
+
+}
+
+
+/* =========================================================
+   CONNECT FOUR
+========================================================= */
+
+function launchConnectFour() {
+
+    const rows = 6;
+    const cols = 7;
+
+
+    let board =
+        Array.from(
+            { length: rows },
+            () =>
+                Array(cols).fill("")
+        );
+
+
+    let currentPlayer = "🔴";
+    let gameFinished = false;
+
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Turn</span>
+            <strong class="score-value">
+                🔴
+            </strong>
+        </div>
+
+        <div
+            class="connect-board"
+            id="connectBoard"
+        ></div>
+
+        <p id="connectMessage">
+            Player 🔴 starts.
+        </p>
+    `;
+
+
+    const boardElement =
+        document.getElementById(
+            "connectBoard"
+        );
+
+
+    const message =
+        document.getElementById(
+            "connectMessage"
+        );
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    function checkWin(player) {
+
+        for (
+            let row = 0;
+            row < rows;
+            row++
+        ) {
+
+            for (
+                let col = 0;
+                col < cols;
+                col++
+            ) {
+
+                if (
+                    board[row][col] !==
+                    player
+                ) {
+                    continue;
+                }
+
+
+                const directions = [
+                    [0, 1],
+                    [1, 0],
+                    [1, 1],
+                    [1, -1]
+                ];
+
+
+                for (
+                    const [
+                        dr,
+                        dc
+                    ] of directions
+                ) {
+
+                    let count = 1;
+
+
+                    for (
+                        let step = 1;
+                        step < 4;
+                        step++
+                    ) {
+
+                        const r =
+                            row +
+                            dr *
+                            step;
+
+
+                        const c =
+                            col +
+                            dc *
+                            step;
+
+
+                        if (
+                            r >= 0 &&
+                            r < rows &&
+                            c >= 0 &&
+                            c < cols &&
+                            board[r][c] ===
+                                player
+                        ) {
+
+                            count++;
+
+                        } else {
+
+                            break;
+
+                        }
+
+                    }
+
+
+                    if (count >= 4) {
+                        return true;
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        return false;
+
+    }
+
+
+    function render() {
+
+        boardElement.innerHTML =
+            board
+                .flatMap(
+                    (row, rowIndex) =>
+                        row.map(
+                            (value, colIndex) => `
+                                <button
+                                    class="connect-cell"
+                                    data-row="${rowIndex}"
+                                    data-col="${colIndex}"
+                                    type="button"
+                                >
+                                    ${value || "•"}
+                                </button>
+                            `
+                        )
+                )
+                .join("");
+
+
+        boardElement
+            .querySelectorAll(
+                ".connect-cell"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        drop(
+                            Number(
+                                button.dataset.col
+                            )
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    function drop(col) {
+
+        if (gameFinished) {
+            return;
+        }
+
+
+        for (
+            let row = rows - 1;
+            row >= 0;
+            row--
+        ) {
+
+            if (
+                !board[row][col]
+            ) {
+
+                board[row][col] =
+                    currentPlayer;
+
+
+                if (
+                    checkWin(
+                        currentPlayer
+                    )
+                ) {
+
+                    gameFinished =
+                        true;
+
+
+                    message.textContent =
+                        `${currentPlayer} wins!`;
+
+
+                    setHighScore(
+                        "connect4",
+                        1
+                    );
+
+
+                    render();
+
+                    return;
+
+                }
+
+
+                if (
+                    board
+                        .flat()
+                        .every(
+                            cell =>
+                                cell !== ""
+                        )
+                ) {
+
+                    gameFinished =
+                        true;
+
+
+                    message.textContent =
+                        "Draw!";
+
+
+                    render();
+
+                    return;
+
+                }
+
+
+                currentPlayer =
+                    currentPlayer ===
+                    "🔴"
+                        ? "🟡"
+                        : "🔴";
+
+
+                scoreElement.textContent =
+                    currentPlayer;
+
+
+                message.textContent =
+                    `${currentPlayer}'s turn.`;
+
+
+                render();
+
+                return;
+
+            }
+
+        }
+
+    }
+
+
+    render();
+
+    return () => {};
+
+}
+
+
+/* =========================================================
+   DODGE BLOCKS
+========================================================= */
+
+function launchDodge() {
+
+    return launchCanvasGame(
+        "dodge"
+    );
+
+}
+
+
+/* =========================================================
+   COIN CATCHER
+========================================================= */
+
+function launchCoinCatcher() {
+
+    gameContainer.innerHTML = `
+        <div class="game-info-bar">
+            <span>Coins</span>
+            <strong class="score-value">
+                0
+            </strong>
+        </div>
+
+        <canvas
+            class="game-canvas"
+            id="coinCanvas"
+            width="420"
+            height="300"
+        ></canvas>
+
+        <p>
+            Use ← and → to catch coins.
+        </p>
+    `;
+
+
+    const canvas =
+        document.getElementById(
+            "coinCanvas"
+        );
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    const scoreElement =
+        gameContainer.querySelector(
+            ".score-value"
+        );
+
+
+    let playerX = 190;
+    let coins = [];
+    let score = 0;
+    let animationId = null;
+    let lastSpawn = 0;
+
+
+    const keys = {};
+
+
+    function keyDown(event) {
+
+        keys[event.key] = true;
+
+    }
+
+
+    function keyUp(event) {
+
+        keys[event.key] = false;
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        keyDown
+    );
+
+
+    document.addEventListener(
+        "keyup",
+        keyUp
+    );
+
+
+    function loop() {
+
+        ctx.fillStyle =
+            "#10101a";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        if (
+            keys.ArrowLeft
+        ) {
+
+            playerX -= 6;
+
+        }
+
+
+        if (
+            keys.ArrowRight
+        ) {
+
+            playerX += 6;
+
+        }
+
+
+        playerX =
+            Math.max(
+                0,
+                Math.min(
+                    370,
+                    playerX
+                )
+            );
+
+
+        if (
+            performance.now() -
+            lastSpawn >
+            650
+        ) {
+
+            coins.push({
+                x:
+                    10 +
+                    Math.random() *
+                    390,
+
+                y: -10,
+
+                speed:
+                    2 +
+                    Math.random() * 2
+            });
+
+
+            lastSpawn =
+                performance.now();
+
+        }
+
+
+        coins.forEach(
+            coin => {
+
+                coin.y +=
+                    coin.speed;
+
+            }
+        );
+
+
+        for (
+            const coin of coins
+        ) {
+
+            if (
+                coin.x >
+                    playerX &&
+                coin.x <
+                    playerX + 50 &&
+                coin.y >
+                    250 &&
+                coin.y <
+                    290
+            ) {
+
+                coin.caught = true;
+
+                score++;
+
+                scoreElement.textContent =
+                    score;
+
+
+                setHighScore(
+                    "coin",
+                    score
+                );
+
+            }
+
+        }
+
+
+        coins =
+            coins.filter(
+                coin =>
+                    !coin.caught &&
+                    coin.y < 320
+            );
+
+
+        ctx.fillStyle =
+            "#00f5ff";
+
+
+        ctx.fillRect(
+            playerX,
+            270,
+            50,
+            15
+        );
+
+
+        ctx.fillStyle =
+            "#ffd700";
+
+
+        coins.forEach(
+            coin => {
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    coin.x,
+                    coin.y,
+                    8,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+
+            }
+        );
+
+
+        animationId =
+            requestAnimationFrame(
+                loop
+            );
+
+    }
+
+
+    loop();
+
+
+    return () => {
+
+        cancelAnimationFrame(
+            animationId
+        );
+
+
+        document.removeEventListener(
+            "keydown",
+            keyDown
+        );
+
+
+        document.removeEventListener(
+            "keyup",
+            keyUp
+        );
+
+    };
+
+}
+
+
+/* =========================================================
+   GAME LAUNCHERS
+========================================================= */
+
+const gameLaunchers = {
+
+    snake:
+        launchSnake,
+
+    tictactoe:
+        launchTicTacToe,
+
+    "2048":
+        launch2048,
+
+    memory:
+        launchMemory,
+
+    reaction:
+        launchReaction,
+
+    numberguess:
+        launchNumberGuess,
+
+    pong:
+        () =>
+            launchCanvasGame(
+                "pong"
+            ),
+
+    breakout:
+        () =>
+            launchCanvasGame(
+                "breakout"
+            ),
+
+    minesweeper:
+        launchMinesweeper,
+
+    connect4:
+        launchConnectFour,
+
+    rps:
+        launchRPS,
+
+    simon:
+        launchSimon,
+
+    whack:
+        launchWhack,
+
+    sliding:
+        launchSliding,
+
+    colormatch:
+        launchColorMatch,
+
+    mathsprint:
+        launchMathSprint,
+
+    tap:
+        launchTap,
+
+    wordguess:
+        launchWordGuess,
+
+    dodge:
+        launchDodge,
+
+    coin:
+        launchCoinCatcher
+
+};
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
 function initializeApp() {
-    loadTheme();
+
     renderCategories();
-    renderGameCards();
 
-    const versionElement =
-        document.querySelector(".version");
+    renderGames();
 
-    if (versionElement) {
-        versionElement.textContent =
-            "Version 1.0.0";
-    }
+    applyTheme();
 
-    const developerElement =
-        document.querySelector(".developer");
-
-    if (developerElement) {
-        developerElement.textContent =
-            "Developer: MASTERMIND";
-    }
 }
+
 
 initializeApp();

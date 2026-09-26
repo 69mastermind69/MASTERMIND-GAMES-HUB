@@ -1,0 +1,6 @@
+{
+  "appId": "com.mastermind.gameshub",
+  "appName": "MASTERMIND GAMES HUB",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}

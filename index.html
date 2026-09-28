@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
 
     <meta
         name="description"
@@ -14,9 +18,30 @@
         content="#5b5cf0"
     >
 
+    <meta
+        name="mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent"
+    >
+
     <link
         rel="manifest"
         href="manifest.json"
+    >
+
+    <link
+        rel="icon"
+        href="icon.svg"
+        type="image/svg+xml"
     >
 
     <title>MASTERMIND GAMES HUB</title>
@@ -33,7 +58,10 @@
 
         <div class="brand">
 
-            <div class="brand-icon">
+            <div
+                class="brand-icon"
+                aria-hidden="true"
+            >
                 🎮
             </div>
 
@@ -56,6 +84,7 @@
             class="icon-button"
             type="button"
             aria-label="Toggle dark mode"
+            title="Toggle dark mode"
         >
             🌙
         </button>
@@ -116,6 +145,7 @@
                         type="search"
                         placeholder="Search games..."
                         autocomplete="off"
+                        spellcheck="false"
                     >
 
                 </div>
@@ -233,7 +263,7 @@
         </p>
 
         <p class="version">
-            Version 1.0.0
+            Version 1.0.1
         </p>
 
     </footer>
@@ -244,22 +274,30 @@
 
     <script>
         if ("serviceWorker" in navigator) {
+
             window.addEventListener("load", () => {
+
                 navigator.serviceWorker
                     .register("./service-worker.js")
                     .then((registration) => {
+
                         console.log(
                             "Service Worker registered:",
                             registration.scope
                         );
+
                     })
                     .catch((error) => {
+
                         console.error(
                             "Service Worker registration failed:",
                             error
                         );
+
                     });
+
             });
+
         }
     </script>
 
